@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
+
+@import url(./params.css);
+html {
+    font-family: 'PT Sans', sans-serif !important;
+}
+
+body {
+    margin: 0 80px;
+    font-size: 18px;
+    color: var(--font-color);
+    padding: 0px;
+    background-color: var(--background-color);
+}
+
+code {
+    padding: 10px;
+    border-radius: var(--box-border-radius) !important;
+    box-shadow: var(--shadows-color) 0 0 5px 0;
+}
+
+.secondary-color {
+    color: var(--font-secondary-color) !important;
+}
+
+body::-webkit-scrollbar {
+    width: 12px;               
+}
+
+body::-webkit-scrollbar-track {
+    background: var(--background-color);        
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: var(--scroll-color);    
+    border-radius: var(--box-border-radius);       
+    border: 0px;  
+}
+
+.navbar-main {
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar-container {
+    display: flex;
+    list-style: none;
+    justify-content: space-between;
+    padding-left: 0;
+    align-items: flex-end;
+}
+
+.navbar-item:not(:last-child) {
+    margin-right: 15px;
+}
+
+.navbar-item-logo {
+    font-size: 26px !important;
+    margin-bottom: -2px;
+    margin-right: 25px !important;
+}
+
+.navbar-item {
+    font-size: 18px;
+}
+
+.navbar-item:not(.navbar-item-logo) > a {
+    color: var(--font-secondary-color);
+}
+
+.main-container-about {
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: 200px;
+}
+
+.main-container-about-info {
+    margin-bottom: 25px;
+}
+
+.main-container-about-items {
+    display: flex;
+    margin-bottom: 25px;
+}
+
+.main-container-about-items > *:not(:last-child) {
+    margin-right: 20px;
+}
+
+.main-container-about-items > * {
+    padding: 5px 20px;
+    background-color: var(--background-secondary-color);
+    box-shadow: var(--shadows-color) 0 0 5px 0;
+    border-radius: var(--box-border-radius);
+}
+
+a {
+    color: var(--font-color);
+    text-decoration: none;
+    transition: color var(--animation-speed) ease-in;
+}
+
+a:hover {
+    transition: all var(--animation-speed) ease-in;
+    color: var(--font-color-hover) !important;
+}

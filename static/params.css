@@ -1,0 +1,18 @@
+* {
+    /* Font colors */
+    --font-color: #ffffff;
+    --font-invert-color: #b6b6b6;
+    --font-secondary-color: #8d8d8d;
+    --font-color-hover: #a9d0ff;
+
+    /* Background colors */
+    --background-color: #202020;
+    --background-invert-color: #252525;
+    --background-secondary-color: #294358;
+
+    /* Effects colors */
+    --shadows-color: #00000083;
+    --box-border-radius: 3px;
+    --animation-speed: 0.25s;
+    --scroll-color: #3d3d3d;
+}

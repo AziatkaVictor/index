@@ -1,5 +1,44 @@
 {% extends "base.html" %}
 {% block title %}Главная страница{% endblock %}
 {% block content %}
-    <h1>Текст</h1> 
+<div class="main-container-about">
+    <div class="main-container-about-info">
+        <h1>Про нас</h1>
+        <p>Мы - небольшой проект по созданию динамической энциклопедии. Данный сайт был создан как пример, для демонстрации возможностей.</p>
+    </div>
+    <div class="main-container-about-items">
+        <div>
+            <h2>0 записей</h2>
+            <p>С простой системой форматирования текста.</p>
+        </div>
+        <div>
+            <h2>0 категорий</h2>
+            <p>Которые можно настроить в административной панели.</p>
+        </div>
+        <div>
+            <h2>0 пользователей</h2>
+            <p>Со своими возможностями, обязанностями и репутацией.</p>
+        </div>
+    </div>
+    <div>
+        <h1>Кастомизация</h1>
+        <p>С помощью переменных в CSS, клиенту будет куда проще подстроить сайт под свою цветовую гамму.</p>
+        <pre><code class="language-css">/* Font colors */
+--font-color: #000000;
+--font-invert-color: #dfdfdf;
+--font-secondary-color: #8d8d8d;
+--font-color-hover: #a9d0ff;
+
+/* Background colors */
+--background-color: #ffffff;
+--background-invert-color: #252525;
+--background-secondary-color: #90c3e0;
+
+/* Effects colors */
+--shadows-color: #00000073;
+--box-border-radius: 3px;
+--animation-speed: 0.25s;</code></pre>
+<p>И тому подобное, специально для клиентов была написана документация, чтобы ответить на вопросы по редактированию функционала.</p>
+    </div>
+</div>
 {% endblock %}

@@ -5,9 +5,40 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='highlight/styles/stackoverflow-dark.min.css')}}">
+    <script src="{{ url_for('static', filename='highlight/highlight.min.js')}}"></script>
+    <script>hljs.highlightAll();</script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <title>Index: {% block title %}{% endblock %}</title>
 </head>
     <body>
+        <nav class="navbar-main">
+            <ul class="navbar-container">
+                <li class="navbar-item navbar-item-logo">
+                    <a href="/">Index</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#">Обзор</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#">Помощь</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#">Тех. поддержка</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#">Админ</a>
+                </li>
+            </ul>
+            <ul class="navbar-container">
+                <li class="navbar-item">
+                    <a href="#">Войти</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#">Регистрация</a>
+                </li>
+            </ul>
+        </nav>
         {% block content %}{% endblock %}
     </body>
 </html>
