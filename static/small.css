@@ -1,6 +1,7 @@
-@media (max-width: 650px) {
+@media (max-width: 730px) {
     body {
         margin: 0 20px !important;
+        --body-margin: 20px !important;
         padding: 0;
     }
 
@@ -19,5 +20,9 @@
 
     .main-container-about-items {
         display:block !important;
+    }
+    
+    .additional-information {
+        display: none;
     }
 }

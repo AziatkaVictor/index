@@ -9,17 +9,56 @@ html {
 }
 
 body {
-    margin: 0 80px;
-    font-size: 18px;
+    --body-margin: 80px;
+    margin: 0 var(--body-margin);
+    font-size: 1em;
     color: var(--font-color);
     padding: 0px;
-    background-color: var(--background-color);
+    background: var(--background);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 code {
     padding: 10px;
     border-radius: var(--box-border-radius) !important;
     box-shadow: var(--shadows-color) 0 0 5px 0;
+}
+
+.flex-display {
+    display: flex;
+}
+
+.flex-space-between {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.clear-ul {
+    list-style: none;
+    padding: 0;
+} 
+
+.clear-ul > *:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+.avatar {
+    margin-left: 10px;
+    background-color: var(--background-secondary-color);
+    border-radius: 100%;
+    width: 64px;
+    height: 64px;
+}
+
+small {
+    font-size: 16px;
+}
+
+.nickname {
+    font-size: 22px;
+    margin-bottom: 0px !important;
 }
 
 .secondary-color {
@@ -40,9 +79,19 @@ body::-webkit-scrollbar-thumb {
     border: 0px;  
 }
 
+.container-shadow {
+    background-color: var(--background-color) !important;
+    padding: 10px 20px !important;
+    border-radius: var(--box-border-radius);
+    box-shadow: var(--shadows-color) 0 0 10px 0;
+    height: fit-content;
+}
+
 .navbar-main {
     display: flex;
     justify-content: space-between;
+    margin: 0 calc(var(--body-margin) * -1);
+    padding: 0 var(--body-margin);
 }
 
 .navbar-container {
@@ -71,19 +120,18 @@ body::-webkit-scrollbar-thumb {
     color: var(--font-secondary-color);
 }
 
-.main-container-about {
-    max-width: 800px;
+.main-container {
+    max-width: 1100px;
     margin: 0 auto;
-    margin-top: 200px;
+    margin-top: 100px;
 }
 
-.main-container-about-info {
-    margin-bottom: 25px;
+.main-container-flex {
+    display: flex;
 }
 
 .main-container-about-items {
     display: flex;
-    margin-bottom: 25px;
 }
 
 .main-container-about-items > *:not(:last-child) {
@@ -97,10 +145,38 @@ body::-webkit-scrollbar-thumb {
     border-radius: var(--box-border-radius);
 }
 
+.article-link {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.container-sticky {
+    position: sticky;
+    top: 0;
+}
+
+.container-info > *:not(:last-child) {
+    margin-bottom: 10px;
+}
+
 a {
     color: var(--font-color);
     text-decoration: none;
     transition: color var(--animation-speed) ease-in;
+}
+
+.footer {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.litlle {
+    font-size: 12px;
+}
+
+.additional-information {
+    margin-right: 10px;
 }
 
 a:hover {
