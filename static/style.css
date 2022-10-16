@@ -172,7 +172,12 @@ a {
 }
 
 .litlle {
-    font-size: 12px;
+    font-size: 14px;
+}
+
+li.article {
+    list-style: outside;
+    margin-left: 15px;
 }
 
 .additional-information {

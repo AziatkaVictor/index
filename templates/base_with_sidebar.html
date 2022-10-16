@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+<div class="additional-information">
+    <div class="container-sticky container-info">
+        <!-- Профиль -->
+        {% if current_user.is_authenticated %}
+        <div class="container-shadow">
+            <div class="flex-display flex-space-between">
+                <ul class="clear-ul">
+                    <li class="nickname">
+                        <a href="#">{{ current_user.username }}</a>
+                    </li>
+                    <li class="secondary-color"><small>{{ current_user.group }}</small></li>
+                </ul>
+                <img class="avatar" src="https://www.w3schools.com/howto/img_avatar.png">
+            </div>
+            <hr>
+            <ul class="clear-ul">
+                <li><span class="secondary-color">Репутация:</span> {{ current_user.reputation }}</li>
+                <li><span class="secondary-color">Статьи:</span> {{ current_user.articles_count }}</li>
+            </ul>
+        </div>
+        {% endif %}
+        <!-- Реклама -->
+        <div class="container-shadow">
+            <h4>Реклама</h4>
+        </div>
+        <!-- Последние статьи -->
+        <div class="container-shadow">
+            <h4>Последние статьи</h4>
+            <ul class="clear-ul">
+                <li class="article">
+                    <a href="#" class="article-link">Интересная статья!</a><br>
+                    <span class="secondary-color litlle">от <a href="#"class="article-link">Автор</a></span>
+                </li>
+                <li class="article">
+                    <a href="#" class="article-link">Интересная статья!</a><br>
+                    <span class="secondary-color litlle">от <a href="#"class="article-link">Автор</a></span>
+                </li>
+                <li class="article">
+                    <a href="#" class="article-link">Интересная статья!</a><br>
+                    <span class="secondary-color litlle">от <a href="#"class="article-link">Автор</a></span>
+                </li>
+            </ul>
+        </div>
+        <!-- Жалобы -->
+        <div class="container-shadow">
+            <h4>Жалобы</h4>
+            <p>При нарушении правил вы можете доложить об этом администрации!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

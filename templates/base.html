@@ -10,77 +10,57 @@
     <script>hljs.highlightAll();</script>
     <title>Index: {% block title %}{% endblock %}</title>
 </head>
-    <body>
-        <nav class="navbar-main">
-            <ul class="navbar-container">
-                <li class="navbar-item navbar-item-logo">
-                    <a href="/">Index</a>
+
+<body>
+    <nav class="navbar-main">
+        <ul class="navbar-container">
+            <li class="navbar-item navbar-item-logo">
+                <a href="/">Index</a>
+            </li>
+            <li class="navbar-item">
+                <a href="#">Обзор</a>
+            </li>
+            <li class="navbar-item">
+                <a href="#">Активность</a>
+            </li>
+            <li class="navbar-item">
+                <a href="#">Тех. поддержка</a>
+            </li>
+            {% if current_user.is_admin %}
+            <li class="navbar-item">
+                <a href="#">Админ</a>
+            </li>
+            {% endif %}
+        </ul>
+        <ul class="navbar-container">
+            {% if not current_user.is_authenticated %}
+                <li class="navbar-item">
+                    <a href="{{ url_for('login')}}">Войти</a>
                 </li>
                 <li class="navbar-item">
-                    <a href="#">Обзор</a>
+                    <a href="{{ url_for('registration')}}">Регистрация</a>
+                </li>
+            {% else %}   
+                <li class="navbar-item">
+                    <a href="#">{{ current_user.username }}</a>
                 </li>
                 <li class="navbar-item">
-                    <a href="#">Активность</a>
+                    <a href="{{ url_for('logout')}}">Выйти</a>
                 </li>
-                <li class="navbar-item">
-                    <a href="#">Тех. поддержка</a>
-                </li>
-                <li class="navbar-item">
-                    <a href="#">Админ</a>
-                </li>
-            </ul>
-            <ul class="navbar-container">
-                <li class="navbar-item">
-                    <a href="#">Войти</a>
-                </li>
-                <li class="navbar-item">
-                    <a href="#">Регистрация</a>
-                </li>
-            </ul>
-        </nav>
-        <div class="main-container">
-            <div class="main-container-flex">
-                <div class="additional-information">
-                    <div class="container-sticky container-info">
-                        <div class="container-shadow">
-                            <div class="flex-display flex-space-between">
-                                <ul class="clear-ul">
-                                    <li class="nickname">Никнейм</li>
-                                    <li class="secondary-color"><small>Администратор</small></li>
-                                </ul>
-                                <img class="avatar" src="https://www.w3schools.com/howto/img_avatar.png">
-                            </div>
-                            <hr>
-                            <ul class="clear-ul">
-                                <li>Репутация: 0</li>
-                                <li>Статьи: 0</li>
-                                <li>Выйти</li>
-                            </ul>
-                        </div>
-                        <div class="container-shadow">
-                            <h4>Реклама</h4>
-                        </div>
-                        <div class="container-shadow">
-                            <h4>Последние статьи</h4>
-                            <ul class="clear-ul">
-                                <li><a href="#" class="article-link">Интересная статья!</a></li>
-                                <li><a href="#" class="article-link">Интересная статья!</a></li>
-                                <li><a href="#" class="article-link">Интересная статья!</a></li>
-                            </ul>
-                        </div>
-                        <div class="container-shadow">
-                            <h4>Жалобы</h4>
-                            <p>При нарушении правил вы можете доложить об этом администрации!</p>
-                        </div>
-                    </div>
-                </div>
-                {% block content %}{% endblock %}
-            </div>  
-            <div class="container-shadow footer secondary-color">
-                <span>Powered by Python | Flask | PostgreSQL | SQLAlchemy</span>
-                <br>
-                <span class="litlle">Created by AziatkaVictor</span>
-            </div>
+            {% endif %}
+        </ul>
+    </nav>
+    <div class="main-container">
+        <div class="main-container-flex">
+            {% block sidebar %}{% endblock %}   
+            {% block content %}{% endblock %}
         </div>
-    </body>
+        <div class="container-shadow footer secondary-color">
+            <span>Powered by Python | Flask | SQLite | SQLAlchemy</span>
+            <br>
+            <span class="litlle">Created by AziatkaVictor</span>
+        </div>
+    </div>
+</body>
+
 </html>
