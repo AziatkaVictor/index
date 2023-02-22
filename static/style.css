@@ -86,12 +86,37 @@ body::-webkit-scrollbar-thumb {
     box-shadow: var(--shadows-color) 0 0 10px 0;
     height: fit-content;
 }
+#sticky-content {
+    transition: padding-top 0.25s;
+}
+
+#sticky-content.sticky-content-start {
+    padding-top: 75px;
+    transition: padding-top 0.25s;
+}
 
 .navbar-main {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: -webkit-fill-available;
     display: flex;
     justify-content: space-between;
-    margin: 0 calc(var(--body-margin) * -1);
     padding: 0 var(--body-margin);
+    transition: box-shadow 0.25s ease-in;
+    transition: background 0.25s ease-in;
+    z-index: 999;
+}
+
+.fixed-nav {
+    background: var(--background-color);
+    box-shadow: 0 0 10px var(--shadows-color);
+    transition: box-shadow 0.25s ease-in;
+    transition: background 0.25s ease-in;
+}
+
+.navbar-item.more {
+    display: none;
 }
 
 .navbar-container {
@@ -127,6 +152,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .main-container-flex {
+    min-height: 81vh;
     display: flex;
 }
 
@@ -171,8 +197,42 @@ a {
     text-align: center;
 }
 
+.error {
+    font-size: 14px;
+    color: red;
+}
+
+.full {
+    width: -webkit-fill-available !important;
+    height: auto !important;
+}
+
+input {
+    padding: 5px;
+    background: var(--background-secondary-color);
+    border: 0px;
+    color: var(--font-color);
+    border-radius: 3px;
+    margin-top: 5px;
+}
+
+textarea {    
+    width: -webkit-fill-available !important;
+    min-height: 500px;
+    padding: 5px;
+    background: var(--background-secondary-color);
+    border: 0px;
+    color: var(--font-color);
+    border-radius: 3px;
+    margin-top: 5px;
+}
+
 .litlle {
     font-size: 14px;
+}
+
+.fit {
+    width: fit-content !important;
 }
 
 li.article {
@@ -180,8 +240,25 @@ li.article {
     margin-left: 15px;
 }
 
+.article-item {
+    padding: 10px;
+    background: var(--background-secondary-color);
+    margin: 5px 0;
+    border-radius: var(--box-border-radius);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.article-item-info { 
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+}
+
 .additional-information {
     margin-right: 10px;
+    max-width: 280px;
 }
 
 a:hover {

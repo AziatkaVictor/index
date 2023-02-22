@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block sidebar %}
-<div class="additional-information">
-    <div class="container-sticky container-info">
+<div class="additional-information" id="sticky-container">
+    <div class="container-sticky container-info" id="sticky-content">
         <!-- Профиль -->
         {% if current_user.is_authenticated %}
         <div class="container-shadow">
@@ -22,10 +22,6 @@
             </ul>
         </div>
         {% endif %}
-        <!-- Реклама -->
-        <div class="container-shadow">
-            <h4>Реклама</h4>
-        </div>
         <!-- Последние статьи -->
         <div class="container-shadow">
             <h4>Последние статьи</h4>
@@ -44,11 +40,28 @@
                 </li>
             </ul>
         </div>
+        <!-- Реклама -->
+        <div class="container-shadow">
+            <h4>Реклама</h4>
+        </div>
         <!-- Жалобы -->
         <div class="container-shadow">
             <h4>Жалобы</h4>
             <p>При нарушении правил вы можете доложить об этом администрации!</p>
         </div>
     </div>
+    <script>
+        window.addEventListener("scroll", content);
+        var stickyContainer = document.getElementById("sticky-container");
+        var stickyContent = document.getElementById("sticky-content");
+        var sticky2 = stickyContainer.offsetTop;
+        function content() {
+            if (window.pageYOffset > sticky2) {
+                stickyContent.classList.add("sticky-content-start")
+            } else {
+                stickyContent.classList.remove("sticky-content-start");
+            }
+        }
+    </script>
 </div>
 {% endblock %}

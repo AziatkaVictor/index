@@ -36,5 +36,11 @@
 
     .additional-information {
         margin-right: 0 !important;
+        max-width: max-content !important;
+    }
+
+    #sticky-content.sticky-content-start {
+        padding-top: 0px !important;
+        transition: padding-top 0.25s;
     }
 }

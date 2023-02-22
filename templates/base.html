@@ -12,14 +12,19 @@
 </head>
 
 <body>
-    <nav class="navbar-main">
+    <nav class="navbar-main" id="navbar">
         <ul class="navbar-container">
             <li class="navbar-item navbar-item-logo">
                 <a href="/">Index</a>
             </li>
             <li class="navbar-item">
-                <a href="#">Обзор</a>
+                <a href="{{ url_for('view') }}">Обзор</a>
             </li>
+            {% if current_user.is_authenticated %}
+            <li class="navbar-item">
+                <a href="{{ url_for('add_article') }}">Добавить запись</a>
+            </li>
+            {% endif %}
             <li class="navbar-item">
                 <a href="#">Активность</a>
             </li>
@@ -33,6 +38,7 @@
             {% endif %}
         </ul>
         <ul class="navbar-container">
+            <li class="navbar-item more">≡</li>
             {% if not current_user.is_authenticated %}
                 <li class="navbar-item">
                     <a href="{{ url_for('login')}}">Войти</a>
@@ -50,6 +56,20 @@
             {% endif %}
         </ul>
     </nav>
+    <script>
+        window.addEventListener("scroll", myFunction);
+        var navbar = document.getElementById("navbar");
+        var sticky = navbar.offsetTop;
+
+        // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+        function myFunction() {
+            if (window.pageYOffset > sticky) {
+                navbar.classList.add("fixed-nav")
+            } else {
+                navbar.classList.remove("fixed-nav");
+            }
+        }
+    </script>
     <div class="main-container">
         <div class="main-container-flex">
             {% block sidebar %}{% endblock %}   

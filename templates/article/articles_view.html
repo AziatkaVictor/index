@@ -1,0 +1,68 @@
+{% extends "base_with_sidebar.html" %}
+{% block title %}Обзор{% endblock %}
+{% block content %}
+
+<div class="container-shadow full">
+    <h1>Все записи на сайте</h1>
+    {% for category in categories %}
+        <div id="details-{{ category.id }}">
+            <summary id="summary-{{ category.id }}">
+                <big>
+                    <b>
+                        <span class="secondary-color">↺</span> {{ category.name }}
+                    </b>
+                </big>
+                <hr>
+            </summary>
+            <div>
+                {% for article in category.articles %}
+                    <div class="article-item">
+                            <a href="{{ url_for('detail_article', id=article.id) }}">{{ article.name }}</a>
+                        <div class="article-item-info">
+                            <span class="litlle">
+                                {{ article.author.username }}
+                            </span>
+                            <div class="secondary-color litlle">
+                                {{ article.datetime }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <script>
+                var fields_{{ category.id }} = document.getElementById("details-{{ category.id }}");
+                var button_{{ category.id }} = document.getElementById("summary-{{ category.id }}");
+                button_{{ category.id }}.onclick = AddClassDetail_{{ category.id }};
+    
+                function AddClassDetail_{{ category.id }} (event) {
+                    fields_{{ category.id }}.classList.toggle("Close");
+                }
+            </script>
+            <style>
+                #summary-{{ category.id }} {
+                    cursor: pointer;
+                    margin: 5px 0;
+                }
+    
+                #details-{{ category.id }} {
+                    overflow: hidden;
+                }
+    
+                #details-{{ category.id }} > div {
+                    transition: all 0.25s linear;
+                    -webkit-transition: all 0.25s linear;
+                    opacity: 1;
+                    max-height: calc(78px * {{ category.articlesCount }});
+                }
+    
+                #details-{{ category.id }}.Close > div {
+                    opacity: 0;
+                    max-height: 0;
+                }
+            </style>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
