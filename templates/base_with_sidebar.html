@@ -25,20 +25,20 @@
         <!-- Последние статьи -->
         <div class="container-shadow">
             <h4>Последние статьи</h4>
-            <ul class="clear-ul">
-                <li class="article">
-                    <a href="#" class="article-link">Интересная статья!</a><br>
-                    <span class="secondary-color litlle">от <a href="#"class="article-link">Автор</a></span>
-                </li>
-                <li class="article">
-                    <a href="#" class="article-link">Интересная статья!</a><br>
-                    <span class="secondary-color litlle">от <a href="#"class="article-link">Автор</a></span>
-                </li>
-                <li class="article">
-                    <a href="#" class="article-link">Интересная статья!</a><br>
-                    <span class="secondary-color litlle">от <a href="#"class="article-link">Автор</a></span>
-                </li>
-            </ul>
+            {% if lastPages %}
+                {% for page in lastPages %}
+                    <ul class="clear-ul">
+                        <li class="article">
+                            <a href="{{ url_for('detail_article', id=page.id) }}" class="article-link">{{ page.name }}</a><br>
+                            <span class="secondary-color litlle">от <a href="#"class="article-link">{{ page.author.username }}</a></span>
+                        </li>
+                    </ul>
+                {% endfor %}
+            {% else %}
+            <p>
+                Нету статей(
+            </p>
+            {% endif %}
         </div>
         <!-- Реклама -->
         <div class="container-shadow">

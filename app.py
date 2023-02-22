@@ -3,11 +3,13 @@ from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_required, login_user, logout_user, current_user
 from form import ArticleForm, LoginForm, RegistrationForm
+from flaskext.markdown import Markdown
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'a-really-really-really-really-long-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 db = SQLAlchemy(app)
+Markdown(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -20,6 +22,10 @@ class Methods():
     @classmethod
     def getCount(self) -> int:
         return len(self.query.filter_by().all())
+
+    @classmethod
+    def getLast(self, count : int):
+        return self.query.order_by(-self.creation_date).limit(count).all()
 
     @classmethod
     def getAll(self):
@@ -120,7 +126,7 @@ def user_loader(user_id):
 
 @app.route("/")
 def main():
-    return render_template('main.html', articleCount=Article.getCount(), categoryCount=Category.getCount(), userCount=User.getCount())
+    return render_template('main.html', articleCount=Article.getCount(), categoryCount=Category.getCount(), userCount=User.getCount(), lastPages = Article.getLast(3))
 
 @app.route("/login/", methods=["GET", "POST"])
 def login():

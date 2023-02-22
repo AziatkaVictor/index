@@ -26,6 +26,24 @@ code {
     box-shadow: var(--shadows-color) 0 0 5px 0;
 }
 
+select {
+    background: var(--background-secondary-color);
+    color: var(--font-color);
+    border: 0;
+    padding: 3px;
+    margin: 5px 0;
+    font-size: 1em;
+}
+
+select:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 0;
+}
+
+#submit {
+    padding: 10px;
+    background: var(--background-submit);
+}
+
 .flex-display {
     display: flex;
 }
@@ -36,8 +54,9 @@ code {
 }
 
 .clear-ul {
-    list-style: none;
-    padding: 0;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 10px 0;
 } 
 
 .clear-ul > *:not(:last-child) {
@@ -86,6 +105,7 @@ body::-webkit-scrollbar-thumb {
     box-shadow: var(--shadows-color) 0 0 10px 0;
     height: fit-content;
 }
+
 #sticky-content {
     transition: padding-top 0.25s;
 }
@@ -233,11 +253,6 @@ textarea {
 
 .fit {
     width: fit-content !important;
-}
-
-li.article {
-    list-style: outside;
-    margin-left: 15px;
 }
 
 .article-item {

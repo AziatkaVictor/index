@@ -6,9 +6,11 @@
         {{ form.csrf_token }}
 
         {% for field in form if field.name != 'csrf_token' %}
-        <div>
-            {{ field.label() }}
-            <br>
+        <div style="margin: 10px 0;">
+            {% if field.name != "submit" %}
+                {{ field.label() }}
+                <br>
+            {% endif %}
             {{ field() }}
             {% for error in field.errors %}
                 <div class="error">{{ error }}</div>

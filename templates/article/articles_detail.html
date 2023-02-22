@@ -6,7 +6,7 @@
     <h1>{{ article.name }}</h1>
     <div><span class="secondary-color">Автор:</span> {{ article.author.username }}</div>
     <div><span class="secondary-color">Категория:</span> {{ article.category.name }}</div>
-    <div style="margin-top: 10px">{{ article.content|safe }}</div>
+    <div style="margin-top: 10px">{{ article.content|markdown }}</div>
 </div>
 
 {% endblock %}

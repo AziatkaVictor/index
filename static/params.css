@@ -1,38 +1,17 @@
-@import url(./highlight/styles/default.min.css);
+@import url(./highlight/styles/stackoverflow-dark.min.css);
 
-@media (prefers-color-scheme: dark) {
-    @import url(./highlight/styles/stackoverflow-dark.min.css);
+* { 
+    /* Font colors */
+    --font-color: #ffffff;
+    --font-secondary-color: #8d8d8d;
+    --font-color-hover: #a9d0ff;
 
-    * { 
-        /* Font colors */
-        --font-color: #ffffff;
-        --font-secondary-color: #8d8d8d;
-        --font-color-hover: #a9d0ff;
-    
-        /* Background colors */
-        --background: url(background.png);
-        --background-color: #202020;
-        --background-secondary-color: #464646;
-    }
-}
+    /* Background colors */
+    --background: url(background.png);
+    --background-color: #202020;
+    --background-secondary-color: #464646;
+    --background-submit: #3f5240;
 
-@media (prefers-color-scheme: light) {
-    @import url(./highlight/styles/stackoverflow-light.min.css);
-
-    * { 
-        /* Font colors */
-        --font-color: #000000;
-        --font-secondary-color: #797979;
-        --font-color-hover: #0c2749;
-    
-        /* Background colors */
-        --background: url(https://media.istockphoto.com/vectors/terrain-line-topographic-map-on-white-background-topo-map-elevation-vector-id1302897036);
-        --background-color: #ffffff;
-        --background-secondary-color: #c4c4c4;
-    }
-}
-
-* {
     /* Effects colors */
     --shadows-color: #00000083;
     --box-border-radius: 3px;
