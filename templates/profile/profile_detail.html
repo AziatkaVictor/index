@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }}{% endblock %}
+{% block content %}
+<div class="container-shadow full">
+    {% if user.background %}
+        <div class="profile-background" style="background-image: url({{ user.background }});"></div>
+    {% else %}
+        <div class="profile-background" style="background-image: url(https://img.freepik.com/free-photo/liquid-marbling-paint-texture-background-fluid-painting-abstract-texture-intensive-color-mix-wallpaper_1258-90714.jpg?w=2000);"></div>
+    {% endif %}
+
+    <div class="profile-info flex-display">
+        <div class="profile-info-left flex-display">
+            
+            {% if user.avatar %}
+                <div class="profile-avatar" style="background-image: url({{ user.avatar }});"></div>
+            {% else %}
+                <div class="profile-avatar" style="background-image: url(https://www.w3schools.com/howto/img_avatar.png);"></div>
+            {% endif %}
+
+            <div class="profile-details">
+                <h2 class="profile-username clear-margin">{{ user.username }}</h2>
+                <p class="clear-margin">Группа</p>
+            </div>
+        </div>
+        <div class="profile-info-right">
+            {% if user.id == current_user.id %}
+                <a href="#">Настройки профиля</a>
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <h2>Записи {{ user.username }}</h2>
+        {% for article in user.articles %}
+            <div class="article-item">
+                <a href="{{ url_for('detail_article', id=article.id) }}">{{ article.name }}</a>
+                <div class="article-item-info">
+                    <div class="secondary-color litlle">
+                        {{ article.datetime }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

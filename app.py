@@ -36,6 +36,8 @@ class Methods():
 class User(db.Model, UserMixin, Methods):
     id = db.Column(db.Integer, primary_key=True, unique=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
+    avatar = db.Column(db.String(400))
+    background = db.Column(db.String(400))
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(20), nullable=False)
     registration_date = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
@@ -67,6 +69,18 @@ class User(db.Model, UserMixin, Methods):
     @property
     def is_moderator(self):
         return False 
+    
+    @property
+    def link(self):
+        return url_for('profile', id=self.id)
+     
+    @property
+    def datetime(self) -> str:
+        return self.registration_date.strftime("%H:%M %m.%d.%Y")
+    
+    @property
+    def date(self) -> str:
+        return self.registration_date.strftime("%m.%d.%Y")
 
 class Article(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -136,6 +150,10 @@ def getGlobalsInfo():
 @login_manager.user_loader
 def user_loader(user_id):
     return User.query.get(user_id)
+
+@app.route("/profile/<id>")
+def profile(id):
+    return render_template("profile/profile_detail.html", user=User.query.get(id))
 
 @app.route("/")
 def main():
