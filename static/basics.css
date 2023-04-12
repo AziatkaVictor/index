@@ -1,0 +1,43 @@
+.litlle {
+    font-size: 14px;
+}
+
+.fit {
+    width: fit-content !important;
+}
+
+.full {
+    width: -webkit-fill-available !important;
+    height: auto !important;
+}
+
+.clear-margin {
+    margin: 0;
+}
+
+.flex-display {
+    display: flex;
+}
+
+.flex-space-between {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.clear-ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 10px 0;
+} 
+
+.clear-ul > *:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+small {
+    font-size: 16px;
+}
+
+.secondary-color {
+    color: var(--font-secondary-color) !important;
+}

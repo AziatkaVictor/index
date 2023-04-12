@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
 
+@import url(./basics.css);
+
+@import url(./navbar.css);
+@import url(./profiles.css);
+
 @import url(./params.css);
 @import url(./small.css);
 @import url(./medium.css);
@@ -44,40 +49,9 @@ select:focus-visible, input:focus-visible, textarea:focus-visible {
     background: var(--background-submit);
 }
 
-.clear-margin {
-    margin: 0;
-}
-
-.flex-display {
-    display: flex;
-}
-
-.flex-space-between {
-    justify-content: space-between;
-    align-items: center;
-}
-
-.clear-ul {
-    list-style: none !important;
-    padding: 0 !important;
-    margin: 10px 0;
-} 
-
-.clear-ul > *:not(:last-child) {
-    margin-bottom: 5px;
-}
-
-small {
-    font-size: 16px;
-}
-
 .nickname {
     font-size: 22px;
     margin-bottom: 0px !important;
-}
-
-.secondary-color {
-    color: var(--font-secondary-color) !important;
 }
 
 body::-webkit-scrollbar {
@@ -109,56 +83,6 @@ body::-webkit-scrollbar-thumb {
 #sticky-content.sticky-content-start {
     padding-top: 75px;
     transition: padding-top 0.25s;
-}
-
-.navbar-main {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: -webkit-fill-available;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 var(--body-margin);
-    transition: box-shadow 0.25s ease-in;
-    transition: background 0.25s ease-in;
-    z-index: 999;
-}
-
-.fixed-nav {
-    background: var(--background-color);
-    box-shadow: 0 0 10px var(--shadows-color);
-    transition: box-shadow 0.25s ease-in;
-    transition: background 0.25s ease-in;
-}
-
-.navbar-item.more {
-    display: none;
-}
-
-.navbar-container {
-    display: flex;
-    list-style: none;
-    justify-content: space-between;
-    padding-left: 0;
-    align-items: flex-end;
-}
-
-.navbar-item:not(:last-child) {
-    margin-right: 15px;
-}
-
-.navbar-item-logo {
-    font-size: 26px !important;
-    margin-bottom: -2px;
-    margin-right: 25px !important;
-}
-
-.navbar-item {
-    font-size: 18px;
-}
-
-.navbar-item:not(.navbar-item-logo) > a {
-    color: var(--font-secondary-color);
 }
 
 .main-container {
@@ -218,11 +142,6 @@ a {
     color: red;
 }
 
-.full {
-    width: -webkit-fill-available !important;
-    height: auto !important;
-}
-
 input {
     padding: 5px;
     background: var(--background-secondary-color);
@@ -241,14 +160,6 @@ textarea {
     color: var(--font-color);
     border-radius: 3px;
     margin-top: 5px;
-}
-
-.litlle {
-    font-size: 14px;
-}
-
-.fit {
-    width: fit-content !important;
 }
 
 .article-item {
@@ -275,65 +186,4 @@ textarea {
 a:hover {
     transition: all var(--animation-speed) ease-in;
     color: var(--font-color-hover) !important;
-}
-
-/* PROFILES */
-
-.avatar {
-    margin-left: 10px;
-    background-color: var(--background-secondary-color);
-    border-radius: 100%;
-    width: 64px;
-    height: 64px;
-    background-position: center;
-    background-size: cover;
-}
-
-.profile-background {
-    border-radius: var(--box-border-radius) var(--box-border-radius) 0 0;
-    width: -webkit-fill-available;
-    height: 150px;
-    margin: 0 -10px;
-    background-position: center;
-    background-size: cover;
-}
-
-.profile-info {
-    align-items: flex-end;
-    justify-content: space-between;
-    background: var(--background-secondary-color);
-    padding: 0 20px 0 20px;
-    margin: 0 -10px;
-    border-radius: 0 0 var(--box-border-radius) var(--box-border-radius);
-}
-
-.profile-info-right, .profile-info-left {
-    height: -webkit-fill-available;
-    align-items: flex-end;
-}
-
-.profile-info-right {
-    margin: auto 0;
-    align-items: center;
-}
-
-.profile-avatar {
-    margin-top: -100px;
-    margin-bottom: 10px;
-    border-radius: 100%;
-    width: 125px;
-    height: 125px;
-    box-shadow: #00000094 0 0 3px 0px;
-    background-position: center;
-    background-size: cover;
-}
-
-.profile-username {
-    font-size: 1.60em;
-    font-weight: lighter;
-}
-
-.profile-details {
-    margin-left: 20px;
-    padding: 5px 5px 10px 5px;
 }
