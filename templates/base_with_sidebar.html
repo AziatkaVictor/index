@@ -25,8 +25,8 @@
         <!-- Последние статьи -->
         <div class="container-shadow">
             <h4>Последние статьи</h4>
-            {% if lastPages %}
-                {% for page in lastPages %}
+            {% if globals.lastPages %}
+                {% for page in globals.lastPages %}
                     <ul class="clear-ul">
                         <li class="article">
                             <a href="{{ url_for('detail_article', id=page.id) }}" class="article-link">{{ page.name }}</a><br>

@@ -15,7 +15,7 @@
                 <hr>
             </summary>
             <div>
-                {% for article in category.articles %}
+                {% for article in category.articleSorted() %}
                     <div class="article-item">
                             <a href="{{ url_for('detail_article', id=article.id) }}">{{ article.name }}</a>
                         <div class="article-item-info">

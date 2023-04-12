@@ -25,7 +25,7 @@ class Methods():
 
     @classmethod
     def getLast(self, count : int):
-        return self.query.order_by(-self.creation_date).limit(count).all()
+        return self.query.order_by(-self.creation_date).limit(count).all()[::-1]
 
     @classmethod
     def getAll(self):
@@ -110,6 +110,9 @@ class Category(db.Model, Methods):
     @property
     def articlesCount(self) -> int:
         return len(self.articles)
+    
+    def articleSorted(self) -> list:
+        return Article.query.order_by(Article.creation_date).filter_by(category_id = self.id).all()[::-1]
 
 class Reaction(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -120,13 +123,21 @@ class Reaction(db.Model, Methods):
         self.value = value
         self.article_id = article_id
 
+def getGlobalsInfo():
+    return {
+            "lastPages" : Article.getLast(3),
+            "articleCount" : Article.getCount(),
+            "categoryCount" : Category.getCount(),
+            "userCount" : User.getCount()
+            }
+
 @login_manager.user_loader
 def user_loader(user_id):
     return User.query.get(user_id)
 
 @app.route("/")
 def main():
-    return render_template('main.html', articleCount=Article.getCount(), categoryCount=Category.getCount(), userCount=User.getCount(), lastPages = Article.getLast(3))
+    return  render_template('main.html', globals=getGlobalsInfo())
 
 @app.route("/login/", methods=["GET", "POST"])
 def login():
@@ -142,37 +153,13 @@ def login():
             login_user(user, remember = form.remember.data)
             return redirect(url_for("main"))
 
-    return render_template("login.html", form=form)
+    return render_template("login-registration.html", page_title="Вход", form=form)
 
-@app.route("/add_article/", methods=["GET", "POST"])
+@app.route("/logout/", methods=["GET"])
 @login_required
-def add_article():
-    form = ArticleForm()
-    form.category.choices = [(data.id, data.name)for data in Category.query.filter_by().all()]
-
-    if form.validate_on_submit():
-        article = Article(form.name.data, form.content.data, current_user.id, int(form.category.data))
-        try:
-            db.session.add(article)
-            db.session.flush()
-            db.session.commit()
-
-            return redirect(url_for("main"))
-        except Exception as e:
-            db.session.rollback()
-            print('Error:', e)
-
-    return render_template("./article/article_create.html", form=form)
-
-@app.route("/view_articles/", methods=["GET"])
-def view():
-    categories = Category.getAll()
-    return render_template("./article/articles_view.html", categories=categories)
-
-@app.route("/detail_article/<id>", methods=["GET"])
-def detail_article(id):
-    article = Article.query.get(id)
-    return render_template("./article/articles_detail.html", article = article)
+def logout():
+    logout_user()
+    return redirect(url_for("main"))
 
 @app.route("/registration/", methods=["GET", "POST"])
 def registration():
@@ -213,13 +200,38 @@ def registration():
         except Exception as e:
             print('Error:', e)
             
-    return render_template("registration.html", form=form)
+    return render_template("login-registration.html", page_title="Регистрация", form=form)
 
-@app.route("/logout/", methods=["GET"])
+
+@app.route("/add_article/", methods=["GET", "POST"])
 @login_required
-def logout():
-    logout_user()
-    return redirect(url_for("main"))
+def add_article():
+    form = ArticleForm()
+    form.category.choices = [(data.id, data.name)for data in Category.query.filter_by().all()]
+
+    if form.validate_on_submit():
+        article = Article(form.name.data, form.content.data, current_user.id, int(form.category.data))
+        try:
+            db.session.add(article)
+            db.session.flush()
+            db.session.commit()
+
+            return redirect(url_for("main"))
+        except Exception as e:
+            db.session.rollback()
+            print('Error:', e)
+
+    return render_template("./article/article_create.html", form=form)
+
+@app.route("/view_articles/", methods=["GET"])
+def view():
+    categories = Category.getAll()
+    return render_template("./article/articles_view.html", categories=categories, globals=getGlobalsInfo())
+
+@app.route("/detail_article/<id>", methods=["GET"])
+def detail_article(id):
+    article = Article.query.get(id)
+    return render_template("./article/articles_detail.html", article = article, globals=getGlobalsInfo())
 
 if __name__ == '__main__':
     with app.app_context():
