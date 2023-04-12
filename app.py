@@ -1,6 +1,7 @@
 import datetime
 from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_login import UserMixin, LoginManager, login_required, login_user, logout_user, current_user
 from form import ArticleForm, LoginForm, RegistrationForm
 from flaskext.markdown import Markdown
@@ -9,6 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'a-really-really-really-really-long-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 Markdown(app)
 
 login_manager = LoginManager()
