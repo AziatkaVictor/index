@@ -25,10 +25,30 @@ body {
     background-attachment: fixed;
 }
 
-code {
-    padding: 10px;
+code.hljs {
+    padding: 10px !important;
     border-radius: var(--box-border-radius) !important;
-    box-shadow: var(--shadows-color) 0 0 5px 0;
+    box-shadow: var(--shadows-color) 0 0 5px 0 !important;
+}
+
+code {
+    color: cadetblue;
+}
+
+img {
+    overflow: hidden !important;
+    box-shadow: #000 0 0 3px 0;
+    width: -webkit-fill-available;
+}
+
+blockquote {
+    color: var(--font-secondary-color);
+    font-size: 14px;
+    border-left: 3px var(--font-secondary-color) solid;
+    padding-left: 20px;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: justify;
 }
 
 select {
@@ -74,6 +94,7 @@ body::-webkit-scrollbar-thumb {
     border-radius: var(--box-border-radius);
     box-shadow: var(--shadows-color) 0 0 10px 0;
     height: fit-content;
+    overflow: hidden;
 }
 
 #sticky-content {
