@@ -3,7 +3,7 @@ from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import UserMixin, LoginManager, login_required, login_user, logout_user, current_user
-from form import ArticleForm, LoginForm, RegistrationForm
+from form import ArticleForm, LoginForm, ProfileForm, RegistrationForm
 from flaskext.markdown import Markdown
 
 app = Flask(__name__)
@@ -36,11 +36,13 @@ class Methods():
 class User(db.Model, UserMixin, Methods):
     id = db.Column(db.Integer, primary_key=True, unique=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
-    avatar = db.Column(db.String(400))
-    background = db.Column(db.String(400))
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(20), nullable=False)
     registration_date = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
+    avatar = db.Column(db.String(400))
+    background = db.Column(db.String(400))
+    about = db.Column(db.Text)
+    age = db.Column(db.Integer)
     articles = db.relationship('Article', backref='user')
 
     def __init__(self, username : str, email : str, password : str):
@@ -154,6 +156,23 @@ def user_loader(user_id):
 @app.route("/profile/<id>")
 def profile(id):
     return render_template("profile/profile_detail.html", user=User.query.get(id))
+
+@app.route("/profile/settings", methods=["GET", "POST"])
+@login_required
+def profile_settings():
+    form = ProfileForm()
+
+    if form.validate_on_submit():
+        user = User.query.get(current_user.id)
+        user.avatar = form.avatar.data
+        user.background = form.background.data
+        user.about = form.about.data
+        user.age = int(form.age.data)
+        db.session.commit()
+        return redirect(url_for("profile", id=current_user.id))
+    
+    form.setData(current_user)
+    return render_template("profile/profile_settings.html", form=form)
 
 @app.route("/")
 def main():

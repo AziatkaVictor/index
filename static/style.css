@@ -138,8 +138,9 @@ a {
 }
 
 .error {
+    margin: 5px 0;
     font-size: 14px;
-    color: red;
+    color: rgb(167, 40, 40);
 }
 
 input {

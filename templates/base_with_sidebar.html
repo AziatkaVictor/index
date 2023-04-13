@@ -13,7 +13,11 @@
                     </li>
                     <li class="secondary-color"><small>{{ current_user.group }}</small></li>
                 </ul>
-                <div class="avatar" style="background-image: url({{ current_user.avatar }});"></div>
+                <div class="avatar user-avatar" 
+                {% if current_user.avatar %}
+                    style="background-image: url({{ current_user.avatar }});"
+                {% endif %}
+                ></div>
             </div>
             <hr>
             <ul class="clear-ul">

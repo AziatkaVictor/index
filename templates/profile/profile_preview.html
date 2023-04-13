@@ -1,0 +1,27 @@
+<div id="{{ source }}-result" class="user-{{source}} review-result" 
+{% if image %}
+style="background-image: url({{ image }});"
+{% endif %}
+></div>
+<style>
+    div#{{ source }}-result {
+        height: {{ sizeY }}px;
+        width: {{ sizeX }}px;
+    }
+</style>
+<script>
+    const {{ source }}Source = document.getElementById("{{ source }}");
+    const {{ source }}Result = document.getElementById("{{ source }}-result");
+
+    const {{ source }}InputHandler = function (e) {
+        if ((e.target.value) && (e.target.value != "")) {
+            {{ source }}Result.style = "background-image:url(" + e.target.value + ");";
+        }
+        else {
+            {{ source }}Result.style = null;
+        }
+    }
+
+    {{ source }}Source.addEventListener('input', {{ source }}InputHandler);
+    {{ source }}Source.addEventListener('propertychange', {{ source }}InputHandler);
+</script>

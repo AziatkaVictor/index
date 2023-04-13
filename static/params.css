@@ -17,4 +17,7 @@
     --box-border-radius: 3px;
     --animation-speed: 0.25s;
     --scroll-color: var(--background-secondary-color);
+
+    --profile-avatar: url(profile_avatar.jpg);
+    --profile-background: url(profileBackground.png);
 }

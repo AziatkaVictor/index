@@ -2,20 +2,20 @@
 {% block title %}{{ user.username }}{% endblock %}
 {% block content %}
 <div class="container-shadow full">
+    <div class="profile-background user-background" 
     {% if user.background %}
-        <div class="profile-background" style="background-image: url({{ user.background }});"></div>
-    {% else %}
-        <div class="profile-background" style="background-image: url(https://img.freepik.com/free-photo/liquid-marbling-paint-texture-background-fluid-painting-abstract-texture-intensive-color-mix-wallpaper_1258-90714.jpg?w=2000);"></div>
+        style="background-image: url({{ user.background }});"
     {% endif %}
+    ></div>
 
     <div class="profile-info flex-display">
         <div class="profile-info-left flex-display">
             
+            <div class="profile-avatar user-avatar" 
             {% if user.avatar %}
-                <div class="profile-avatar" style="background-image: url({{ user.avatar }});"></div>
-            {% else %}
-                <div class="profile-avatar" style="background-image: url(https://www.w3schools.com/howto/img_avatar.png);"></div>
+                style="background-image: url({{ user.avatar }});"
             {% endif %}
+            ></div>
 
             <div class="profile-details">
                 <h2 class="profile-username clear-margin">{{ user.username }}</h2>
@@ -24,11 +24,12 @@
         </div>
         <div class="profile-info-right">
             {% if user.id == current_user.id %}
-                <a href="#">Настройки профиля</a>
+                <a href="{{ url_for('profile_settings') }}">Настройки профиля</a>
             {% endif %}
         </div>
     </div>
     <div>
+        <p>{{ user.about }}</p>
         <h2>Записи {{ user.username }}</h2>
         {% for article in user.articles %}
             <div class="article-item">

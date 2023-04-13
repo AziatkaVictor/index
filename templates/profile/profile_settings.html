@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Настройка профиля{% endblock %}
+{% block content %}
+<div class="container-shadow full">
+    
+    <form action="" method="post">
+        {{ form.csrf_token }}   
+        {% for field in form if field.name != 'csrf_token' %}
+            <div 
+            {% if field.preview %}
+                class="flex-display flex-space-between"
+            {% endif %}
+            style="margin-bottom: 10px;">
+                <div>
+                    {% if field.name != 'submit' %}
+                        {{ field.label() }}
+                        <br>
+                    {% endif %}
+                    {{ field() }}
+                    {% if field.error %}
+                        <p class="error">{{field.error}}</p>
+                    {% endif %}
+                </div>
+                {% if field.preview %}      
+                    {{ field.preview|safe }}
+                {% endif %}
+            </div>
+        {% endfor %} 
+    </form>
+</div>
+{% endblock %}

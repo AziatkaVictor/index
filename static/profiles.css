@@ -56,3 +56,16 @@
     margin-left: 20px;
     padding: 5px 5px 10px 5px;
 }
+
+.user-avatar {
+    background-image: var(--profile-avatar);
+}
+
+.user-background {
+    background-image: var(--profile-background);
+}
+
+.review-result {
+    background-position: center;
+    background-size: cover;
+}
