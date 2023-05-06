@@ -3,6 +3,7 @@
 {% block content %}
 
 <div class="container-shadow">
+    {{ url_for("profile", id=current_user.id)|tojson }}
     <div>
         <h1>Про нас</h1>
         <p>Мы - небольшой проект по созданию динамической энциклопедии. Данный сайт был создан как пример, для

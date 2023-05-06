@@ -34,7 +34,7 @@
             </li>
             {% if current_user.is_admin %}
             <li class="navbar-item">
-                <a href="#">Админ</a>
+                <a href="#">Админ. панель</a>
             </li>
             {% endif %}
         </ul>
@@ -75,6 +75,10 @@
         <div class="main-container-flex">
             {% block sidebar %}{% endblock %}   
             {% block content %}{% endblock %}
+        </div>
+        <!-- Реклама -->
+        <div class="container-shadow footer">
+            <h4>Реклама</h4>
         </div>
         <div class="container-shadow footer secondary-color">
             <span>Powered by Python | Flask | SQLite | SQLAlchemy</span>

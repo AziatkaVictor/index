@@ -18,5 +18,6 @@
         </div>
         {% endfor %}
     </form>
+    {{ ckeditor.load(custom_url=url_for('static', filename='ckeditor/ckeditor.js')) }}
 </div>
 {% endblock %}

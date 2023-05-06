@@ -1,8 +1,14 @@
+from __future__ import annotations
 import requests
+from typing import TYPE_CHECKING
 from flask import render_template
 from flask_wtf import FlaskForm
+from flask_ckeditor import CKEditorField
 from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField, TextAreaField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Email, Length, NumberRange, StopValidation
+
+if TYPE_CHECKING:
+    from app import Article
 
 class ImageField(StringField):
     x = 100
@@ -10,7 +16,7 @@ class ImageField(StringField):
 
     @property
     def preview(self):
-        return render_template("profile/profile_preview.html", image=self.data, source=self.name, sizeX = self.x, sizeY=self.y)
+        return render_template("profile/profile_img_preview.html", image=self.data, source=self.name, sizeX = self.x, sizeY=self.y)
     
 class IsImage():
     def __init__(self, image_formats=("image/png", "image/jpeg", "image/jpg", "image/gif")) -> None:
@@ -18,7 +24,7 @@ class IsImage():
 
     def __call__(self, form, field):
         data:str = field.data
-        if (data is None or data is ''):
+        if (data is None or data == ''):
             field.data = None
             field.error = None
             return
@@ -56,9 +62,19 @@ class RegistrationForm(FlaskForm):
 class ArticleForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
     category = SelectField("Category")
-    content = TextAreaField("Content", validators=[DataRequired()])
-
+    content = CKEditorField("Content", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
+    def setData(self, article: Article):
+        self.name.data = article.name
+        self.category.id = article.category_id
+        self.content.data = article.content
+
+    def updateArticle(self, article: Article) -> Article:
+        article.name = self.name.data
+        article.category_id = self.category.data
+        article.content = self.content.data
+        return article
 
 class ProfileForm(FlaskForm):
     avatar = ImageField("Avatar", validators=[IsImage()])

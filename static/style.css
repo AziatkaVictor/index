@@ -9,10 +9,6 @@
 @import url(./small.css);
 @import url(./medium.css);
 
-html {
-    font-family: 'PT Sans', sans-serif !important;
-}
-
 body {
     --body-margin: 80px;
     margin: 0 var(--body-margin);
@@ -113,7 +109,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .main-container-flex {
-    min-height: 81vh;
+    min-height: 71vh;
     display: flex;
 }
 

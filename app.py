@@ -1,17 +1,26 @@
 import datetime
 from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_ckeditor import CKEditor
 from flask_migrate import Migrate
 from flask_login import UserMixin, LoginManager, login_required, login_user, logout_user, current_user
+from sqlalchemy import MetaData, desc
 from form import ArticleForm, LoginForm, ProfileForm, RegistrationForm
-from flaskext.markdown import Markdown
+
+convention = {
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'a-really-really-really-really-long-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-Markdown(app)
+db = SQLAlchemy(app, metadata=MetaData(naming_convention=convention))
+migrate = Migrate(app, db, render_as_batch=True)
+ckeditor = CKEditor(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -27,7 +36,7 @@ class Methods():
 
     @classmethod
     def getLast(self, count : int):
-        return self.query.order_by(-self.creation_date).limit(count).all()[::-1]
+        return self.query.order_by(desc(self.creation_date)).limit(count).all()
 
     @classmethod
     def getAll(self):
@@ -112,6 +121,11 @@ class Article(db.Model, Methods):
     @property
     def datetime(self) -> str:
         return self.creation_date.strftime("%H:%M %m.%d.%Y")
+    
+    def canEdit(self, user: User = current_user) -> bool:
+        if not user.is_authenticated:
+            return False
+        return user.is_admin or user.id == self.author_id
 
 class Category(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -140,6 +154,35 @@ class Reaction(db.Model, Methods):
     def __init__(self, article_id : int, value = 1):
         self.value = value
         self.article_id = article_id
+
+class Rule(db.Model, Methods):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    title = db.Column(db.String, default="Default Title", nullable=False)
+    description = db.Column(db.Text, default="Default description of the rule", nullable=False)
+    parent_id = db.Column(db.Integer, db.ForeignKey('rule.id'), index=True)
+    children = db.relationship(lambda: Rule, remote_side=id, backref='sub_rules')
+
+    def __init__(self, title: str, description: str, parent: int):
+        self.title = title
+        self.description = description
+        self.parent_id = parent
+
+class Сomplaint(db.Model, Methods):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    rules = db.Column(db.String)
+    article_id = db.Column(db.Integer, db.ForeignKey('article.id'), nullable=False)
+    status = db.Column(db.Integer, db.ForeignKey('complaint_status.id'), index=True)
+
+    def __init__(self, article_id: int, rules: list[Rule]):
+        self.rules = [f"{rule.id}," for rule in rules]
+        self.article_id = article_id
+
+class ComplaintStatus(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    name = db.Column(db.String, default="Default name", nullable=False)
+
+    def __init__(self, name: str):
+        self.name = name
 
 def getGlobalsInfo():
     return {
@@ -226,7 +269,6 @@ def registration():
             user = User(username = form.nickname.data, email = form.email.data, password = form.password.data)
             try:
                 db.session.add(user)
-                db.session.flush()
                 db.session.commit()
                 if current_user.is_authenticated:    
                     logout_user()
@@ -242,35 +284,56 @@ def registration():
     return render_template("login-registration.html", page_title="Регистрация", form=form)
 
 
-@app.route("/add_article/", methods=["GET", "POST"])
+@app.route("/article/add", methods=["GET", "POST"])
 @login_required
 def add_article():
     form = ArticleForm()
     form.category.choices = [(data.id, data.name)for data in Category.query.filter_by().all()]
 
     if form.validate_on_submit():
-        article = Article(form.name.data, form.content.data, current_user.id, int(form.category.data))
+        article = Article(form.name.data, form.content.data, current_user.id, form.category.id)
         try:
             db.session.add(article)
-            db.session.flush()
             db.session.commit()
 
-            return redirect(url_for("main"))
+            return redirect(url_for("detail_article", id=article.id))
         except Exception as e:
             db.session.rollback()
             print('Error:', e)
 
-    return render_template("./article/article_create.html", form=form)
+    return render_template("./article/article_form.html", form=form)
+
+@app.route("/article/<id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_article(id):
+    article: Article = Article.query.get(id)
+    if not article.canEdit(current_user):
+        return redirect(url_for("detail_article", id=article.id))
+    
+    form = ArticleForm()
+    form.category.choices = [(data.id, data.name) for data in Category.query.filter_by().all()]
+
+    if form.validate_on_submit():
+        article = form.updateArticle(article)
+        try:
+            db.session.commit()
+            return redirect(url_for("detail_article", id=article.id))
+        except Exception as e:
+            db.session.rollback()
+            print('Error:', e)
+
+    form.setData(article)
+    return render_template("./article/article_form.html", form=form)
+
+@app.route("/article/<id>", methods=["GET"])
+def detail_article(id):
+    article = Article.query.get(id)
+    return render_template("./article/articles_detail.html", article = article, globals=getGlobalsInfo())
 
 @app.route("/view_articles/", methods=["GET"])
 def view():
     categories = Category.getAll()
     return render_template("./article/articles_view.html", categories=categories, globals=getGlobalsInfo())
-
-@app.route("/detail_article/<id>", methods=["GET"])
-def detail_article(id):
-    article = Article.query.get(id)
-    return render_template("./article/articles_detail.html", article = article, globals=getGlobalsInfo())
 
 if __name__ == '__main__':
     with app.app_context():

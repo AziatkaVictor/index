@@ -1,10 +1,17 @@
 @import url(./highlight/styles/stackoverflow-dark.min.css);
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
+
+
+html {
+    font-family: var(--font) !important;
+}
 
 * { 
     /* Font colors */
     --font-color: #ffffff;
     --font-secondary-color: #8d8d8d;
     --font-color-hover: #a9d0ff;
+    --font: 'PT Sans', sans-serif;
 
     /* Background colors */
     --background: url(background.png);
