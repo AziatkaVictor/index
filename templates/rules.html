@@ -1,0 +1,10 @@
+{% extends "base_with_sidebar.html" %}
+{% block title %}Правила ресурсу{% endblock %}
+{% block content %}
+<div class="container-shadow full">
+    <h1>Правила ресурсу</h1>
+    <p>Ця сторінка містить у собі правила, у разі порушення яких будуть застосовані обмеження. Користувач може тимчасово втратити можливість користуватися деякими функціями порталу або взагалі можливість заходити на сайт.</p>
+    {% import 'widgets/rules.jinja' as rules %}
+    {{ rules.getList(Rules) }}
+</div>
+{% endblock %}

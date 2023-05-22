@@ -1,0 +1,23 @@
+{% macro getList(rules) -%}
+    <ul>
+    {% for rule in rules %}  
+        {{ getData(rule) }}   
+    {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro getData(rule) -%}
+    <li>
+    <h3 class="rule-title">{{ rule.title }}</h3>
+    {% if rule.description %}
+        <p class="rule-descr">{{rule.description|safe}}</p>
+    {% endif %}
+    </li>
+    {% if rule.sub_rules %}
+        <ul>
+        {% for sub_rules in rule.sub_rules %}
+            {{ getData(sub_rules) }}
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}

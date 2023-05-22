@@ -53,6 +53,7 @@ class User(db.Model, UserMixin, Methods):
     about = db.Column(db.Text)
     age = db.Column(db.Integer)
     articles = db.relationship('Article', backref='user')
+    admin = db.Column(db.Boolean, default=False)
 
     def __init__(self, username : str, email : str, password : str):
         self.username = username
@@ -74,7 +75,7 @@ class User(db.Model, UserMixin, Methods):
     # TODO: Проверку, администратор ли пользователь
     @property
     def is_admin(self):
-        return False
+        return bool(self.admin)
 
     # TODO: Проверку, модератор ли пользователь
     @property
@@ -92,6 +93,29 @@ class User(db.Model, UserMixin, Methods):
     @property
     def date(self) -> str:
         return self.registration_date.strftime("%m.%d.%Y")
+
+class Category(db.Model, Methods):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    is_hidden = db.Column(db.Boolean, default=False, nullable=False)
+    articles = db.relationship('Article', backref='category')
+
+    def __init__(self, name : str):
+        self.name = name
+
+    def __repr__(self) -> str:
+        return self.name
+    
+    @property
+    def articlesCount(self) -> int:
+        return len(self.articles)
+    
+    @property
+    def isVisible(self):
+        return not self.is_hidden
+    
+    def articleSorted(self) -> list:
+        return Article.query.order_by(Article.creation_date).filter_by(category_id = self.id).all()[::-1]
 
 class Article(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -115,12 +139,16 @@ class Article(db.Model, Methods):
         return User.query.get(self.author_id)
 
     @property
-    def category(self) -> User:
+    def category(self) -> Category:
         return Category.query.get(self.category_id)
 
     @property
     def datetime(self) -> str:
         return self.creation_date.strftime("%H:%M %m.%d.%Y")
+    
+    @property
+    def isVisible(self) -> bool:
+        return (not self.is_hidden) and self.category.isVisible
     
     def canEdit(self, user: User = current_user) -> bool:
         if not user:
@@ -135,25 +163,6 @@ class Article(db.Model, Methods):
         if not user.is_authenticated:
             return False
         return user.is_admin or user.id == self.author_id
-
-class Category(db.Model, Methods):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    name = db.Column(db.String, nullable=False)
-    is_hidden = db.Column(db.Boolean, default=False, nullable=False)
-    articles = db.relationship('Article', backref='category')
-
-    def __init__(self, name : str):
-        self.name = name
-
-    def __repr__(self) -> str:
-        return self.name
-    
-    @property
-    def articlesCount(self) -> int:
-        return len(self.articles)
-    
-    def articleSorted(self) -> list:
-        return Article.query.order_by(Article.creation_date).filter_by(category_id = self.id).all()[::-1]
 
 class Reaction(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -227,8 +236,12 @@ def profile_settings():
     return render_template("profile/profile_settings.html", form=form)
 
 @app.route("/")
-def main():
-    return  render_template('main.html', globals=getGlobalsInfo())
+def main(): 
+    return render_template('main.html', globals=getGlobalsInfo())
+
+@app.route("/rules/")
+def rules():
+    return render_template('rules.html', Rules=Rule.query.filter_by(parent_id = None).all(), globals=getGlobalsInfo())
 
 @app.route("/login/", methods=["GET", "POST"])
 def login():
