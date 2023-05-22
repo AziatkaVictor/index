@@ -123,6 +123,15 @@ class Article(db.Model, Methods):
         return self.creation_date.strftime("%H:%M %m.%d.%Y")
     
     def canEdit(self, user: User = current_user) -> bool:
+        if not user:
+            return False
+        if not user.is_authenticated:
+            return False
+        return user.is_admin or user.id == self.author_id
+    
+    def canDelete(self, user: User = current_user) -> bool:
+        if not user:
+            return False
         if not user.is_authenticated:
             return False
         return user.is_admin or user.id == self.author_id
@@ -324,6 +333,19 @@ def edit_article(id):
 
     form.setData(article)
     return render_template("./article/article_form.html", form=form)
+
+@app.route("/article/<id>/delete", methods=["GET"])
+def delete_article(id):
+    article: Article = Article.query.get(id)
+    if not article:
+        return redirect(url_for("main"))
+    if not article.canDelete(current_user):
+        return redirect(url_for("detail_article", id=article.id))
+    
+    db.session.delete(article)
+    db.session.commit()
+
+    return redirect(url_for("main"))
 
 @app.route("/article/<id>", methods=["GET"])
 def detail_article(id):
