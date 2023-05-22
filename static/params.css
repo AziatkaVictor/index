@@ -6,7 +6,7 @@ html {
     font-family: var(--font) !important;
 }
 
-* { 
+:root { 
     /* Font colors */
     --font-color: #ffffff;
     --font-secondary-color: #8d8d8d;
