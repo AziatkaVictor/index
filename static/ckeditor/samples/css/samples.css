@@ -365,7 +365,7 @@ html {
 .content h3,
 .content h4,
 .content h5 {
-  color: var(--ckeditor-color);
+  color: #000;
   font-weight: 100;
 }
 .content h1 code,
@@ -542,7 +542,7 @@ html {
   display: block;
 }
 .content strong {
-  color: var(--ckeditor-color);
+  color: #000;
 }
 .content ul ul,
 .content ol ul,
@@ -1117,7 +1117,7 @@ main .grid-container.freed-width {
 }
 #info-box > div .toggler:hover {
   background: transparent;
-  color: var(--ckeditor-color);
+  color: #000;
 }
 #info-box > div .toggler:hover > label {
   text-decoration: underline;

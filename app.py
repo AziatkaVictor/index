@@ -111,11 +111,19 @@ class Category(db.Model, Methods):
         return len(self.articles)
     
     @property
-    def isVisible(self):
-        return not self.is_hidden
+    def isVisible(self) -> bool:
+        return (not bool(self.is_hidden))
     
     def articleSorted(self) -> list:
         return Article.query.order_by(Article.creation_date).filter_by(category_id = self.id).all()[::-1]
+    
+    @classmethod
+    def getData(self):
+        categories = Category.query.filter_by(is_hidden = False).all()
+        if current_user.is_authenticated:
+            if current_user.is_admin:
+                categories = Category.getAll()
+        return categories
 
 class Article(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -310,7 +318,7 @@ def registration():
 @login_required
 def add_article():
     form = ArticleForm()
-    form.category.choices = [(data.id, data.name)for data in Category.query.filter_by().all()]
+    form.category.choices = [(data.id, data.name)for data in Category.getData()]
 
     if form.validate_on_submit():
         article = Article(form.name.data, form.content.data, current_user.id, form.category.id)
@@ -333,7 +341,7 @@ def edit_article(id):
         return redirect(url_for("detail_article", id=article.id))
     
     form = ArticleForm()
-    form.category.choices = [(data.id, data.name) for data in Category.query.filter_by().all()]
+    form.category.choices = [(data.id, data.name) for data in Category.getData()]
 
     if form.validate_on_submit():
         article = form.updateArticle(article)
@@ -367,7 +375,7 @@ def detail_article(id):
 
 @app.route("/view_articles/", methods=["GET"])
 def view():
-    categories = Category.getAll()
+    categories = Category.getData()
     return render_template("./article/articles_view.html", categories=categories, globals=getGlobalsInfo())
 
 if __name__ == '__main__':

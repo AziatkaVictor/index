@@ -10,10 +10,24 @@ body
 	margin: 20px;
 }
 
+body::-webkit-scrollbar {
+    width: 8px;               
+}
+
+body::-webkit-scrollbar-track {
+    background: var(--background-color);        
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: var(--scroll-color);    
+    border-radius: var(--box-border-radius);       
+    border: 0px;  
+}
+
 .cke_editable
 {
+	background: var(--background-color);
 	color: var(--font-color);
-	/* Fix for missing scrollbars with RTL texts. (#10488) */
 	word-wrap: break-word;
 }
 
@@ -61,7 +75,7 @@ h1,h2,h3,h4,h5,h6
 hr
 {
 	border: 0px;
-	border-top: 1px solid #ccc;
+	border-top: 1px solid var(--font-color);
 }
 
 img.right
@@ -86,11 +100,6 @@ pre
 	word-wrap: break-word; /* IE7 */
 	-moz-tab-size: 4;
 	tab-size: 4;
-}
-
-.marker
-{
-	background-color: Yellow;
 }
 
 span[lang]

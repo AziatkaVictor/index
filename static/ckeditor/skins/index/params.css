@@ -1,8 +1,0 @@
-
-* {
-    --ckeditor-color: var(--font-color);
-    --icons: url(./icons.png);
-    --icons-hidpi: url(./icons_hidpi.svg);
-    --background-color-ckeditor: var(--background-color);
-    --background-second-color-ckeditor: var(--background-secondary-color)
-}
