@@ -45,13 +45,16 @@ Comments in this file will give more details about each of the above blocks.
 	/* Mandatory: Because the dialog.css file is loaded on demand, we avoid
 		showing an unstyled dialog by hidding it. Here, we restore its visibility. */
 	visibility: visible;
+	color: var(--font-color);
 }
 
 /* The inner boundary container. */
 .cke_dialog_body
 {
 	z-index: 1;
-	background: #fff;
+	background: var(--background-color);
+	border: 1px var(--background-color) solid;
+	border-radius: var(--box-border-radius);
 }
 
 /* Due to our reset we have to recover the styles of some elements. */
@@ -68,12 +71,11 @@ Comments in this file will give more details about each of the above blocks.
 	cursor: move;
 	position: relative;
 
-	color: #484848;
+	color: var(--font-color);
 
-	border-bottom: 1px solid #d1d1d1;
+	border-bottom: 1px solid var(--background-secondary-color);
 	padding: 12px 19px 12px 12px;
-
-	background: #f8f8f8;
+	background: var(--background-secondary-color);
 	letter-spacing: 0.3px;
 }
 
@@ -87,8 +89,8 @@ Comments in this file will give more details about each of the above blocks.
 
 	text-indent: -9999em;
 
-	border: 2px solid rgba(102, 102, 102, 0.2);
-	border-left-color: rgba(102, 102, 102, 1);
+	border: 2px solid var(--background-color);
+	border-left-color: var(--background-color);
 
 	-webkit-animation: dialog_spinner 1s infinite linear;
 	animation: dialog_spinner 1s infinite linear;
@@ -132,11 +134,9 @@ Comments in this file will give more details about each of the above blocks.
    and the footer. */
 .cke_dialog_contents
 {
-	background-color: #fff;
 	overflow: auto;
 	padding: 15px 10px 5px 10px;
 	margin-top: 43px;
-	border-top: 1px solid #d1d1d1;
 }
 
 /* The contents body part, which will hold all elements available in the dialog. */
@@ -153,8 +153,8 @@ Comments in this file will give more details about each of the above blocks.
 {
 	text-align: right;
 	position: relative;
-	border-top: 1px solid #d1d1d1;
-	background: #f8f8f8;
+	border-top: 1px solid var(--background-secondary-color);
+	background: var(--background-secondary-color);
 }
 
 .cke_rtl .cke_dialog_footer
@@ -165,7 +165,7 @@ Comments in this file will give more details about each of the above blocks.
 .cke_hc .cke_dialog_footer
 {
 	outline: none;
-	border-top: 1px solid #fff;
+	border-top: 1px solid var(--background-secondary-color);
 }
 
 .cke_dialog .cke_resizer
@@ -230,12 +230,12 @@ a.cke_dialog_tab
 	cursor: pointer;
 	line-height: 26px;
 	outline: none;
-	color: #484848;
-	border: 1px solid #d1d1d1;
+	color: var(--font-color);
+	border: 1px solid var(--background-secondary-color);
 
 	border-radius: 3px 3px 0 0;
 
-	background: #f8f8f8;
+	background: var(--background-secondary-color);
 	min-width: 90px;
 	text-align: center;
 
@@ -246,7 +246,7 @@ a.cke_dialog_tab
 /* A hover state of a regular inactive tab. */
 a.cke_dialog_tab:hover
 {
-	background-color: #fff;
+	background-color: var(--background-color);
 }
 
 a.cke_dialog_tab:focus
@@ -261,8 +261,8 @@ a.cke_dialog_tab:focus
 /* Single selected tab. */
 a.cke_dialog_tab_selected
 {
-	background: #fff;
-	border-bottom-color: #fff;
+	background: var(--background-color);
+	border-bottom-color: var(--background-color);
 	cursor: default;
 	filter: none;
 }
@@ -271,7 +271,7 @@ a.cke_dialog_tab_selected
 a.cke_dialog_tab_selected:hover,
 a.cke_dialog_tab_selected:focus
 {
-	border-bottom-color: #fff;
+	border-bottom-color: var(--background-color);
 }
 
 .cke_hc a.cke_dialog_tab:hover,
@@ -289,7 +289,7 @@ a.cke_dialog_tab_selected:focus
 
 a.cke_dialog_tab_disabled
 {
-	color: #bababa;
+	color: var(--font-secondary-color);
 	cursor: default;
 }
 
@@ -515,8 +515,8 @@ input.cke_dialog_ui_input_password,
 input.cke_dialog_ui_input_tel,
 textarea.cke_dialog_ui_input_textarea
 {
-	background-color: #fff;
-	border: 1px solid #bcbcbc;
+	background-color: var(--background-secondary-color);
+	border: 1px solid var(--background-secondary-color);
 	padding: 4px 6px;
 	outline: none;
 	width: 100%;
@@ -528,6 +528,8 @@ textarea.cke_dialog_ui_input_textarea
 
 	min-height: 28px;
 	margin-left: 1px;
+
+	color: var(--font-color);
 }
 
 input.cke_dialog_ui_input_text:hover,
@@ -535,7 +537,7 @@ input.cke_dialog_ui_input_password:hover,
 input.cke_dialog_ui_input_tel:hover,
 textarea.cke_dialog_ui_input_textarea:hover
 {
-	border: 1px solid #aeb3b9;
+	border: 1px solid var(--background-secondary-color);
 }
 
 input.cke_dialog_ui_input_text:focus,
@@ -608,10 +610,10 @@ a.cke_dialog_ui_button
 	vertical-align: middle;
 	cursor: pointer;
 
-	border: 1px solid #bcbcbc;
+	border: 1px solid var(--background-color);
 	border-radius: 2px;
 
-	background: #f8f8f8;
+	background: var(--background-color);
 	letter-spacing: 0.3px;
 	line-height: 18px;
 	box-sizing: border-box;
@@ -631,7 +633,7 @@ span.cke_dialog_ui_button
 
 a.cke_dialog_ui_button:hover
 {
-	background: #fff;
+	background: var(--background-color);
 }
 
 /* 	:focus/:active styles for dialog buttons: regular and footer. */
@@ -663,8 +665,8 @@ a.cke_dialog_ui_button:active
 a.cke_dialog_ui_button_ok
 {
 	color: #fff;
-	background: #09863E;
-	border: 1px solid #09863E;
+	background: var(--background-submit);
+	border: 1px solid var(--background-submit);
 }
 
 .cke_hc a.cke_dialog_ui_button {
@@ -950,6 +952,11 @@ tendency that these will be moved to the plugins code in the future.
 	resize: none;
 }
 
+.cke_dialog_background_cover {
+	background-color: rgb(0, 0, 0) !important;
+	opacity: 0.7 !important;
+}
+
 .cke_dialog iframe.cke_pasteframe
 {
 	width: 346px;
@@ -979,6 +986,7 @@ tendency that these will be moved to the plugins code in the future.
 	display: inline;
 	cursor: default;
 	letter-spacing: 0.3px;
+	color: var(--font-color);
 }
 
 .cke_dialog_body label + .cke_dialog_ui_labeled_content

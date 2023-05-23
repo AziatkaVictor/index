@@ -32,12 +32,6 @@ code {
     color: cadetblue;
 }
 
-img {
-    overflow: hidden !important;
-    box-shadow: #000 0 0 3px 0;
-    width: -webkit-fill-available;
-}
-
 blockquote {
     color: var(--font-secondary-color);
     font-size: 14px;

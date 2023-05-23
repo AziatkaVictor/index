@@ -102,8 +102,9 @@ a.cke_combo_button
 .cke_combo_off a.cke_combo_button:focus,
 .cke_combo_off a.cke_combo_button:active
 {
-	background: #e5e5e5;
-	border: 1px solid #bcbcbc;
+	background: var(--background-color);
+	border: 1px var(--background-color) solid;
+	border-radius: var(--box-border-radius);
 	/* Move combo so borders cover separators. Adjust padding to borders. */
 	padding: 0 0 0 1px;
 	margin-left: -1px;
@@ -116,7 +117,7 @@ a.cke_combo_button
 .cke_combo_on a.cke_combo_button,
 .cke_combo_off a.cke_combo_button:active
 {
-	background: #fff;
+	background: var(--background-color);
 }
 
 /* Disable hover styles on mobile devices (#4611). */
@@ -131,8 +132,9 @@ a.cke_combo_button
 	/* We need to restore :active styles. */
 	.cke_combo_off a.cke_combo_button:active
 	{
-		background: #fff;
-		border: 1px solid #bcbcbc;
+		background: var(--background-color);
+		border: 1px var(--background-color) solid;
+		border-radius: var(--box-border-radius);
 	}
 }
 

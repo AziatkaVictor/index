@@ -174,12 +174,19 @@ class Article(db.Model, Methods):
 
 class Reaction(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    value = db.Column(db.Integer, default=1, nullable=False)
+    type = db.Column(db.Integer, db.ForeignKey('reaction_type.id'), nullable=False)
     article_id = db.Column(db.Integer, db.ForeignKey('article.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __init__(self, article_id : int, value = 1):
-        self.value = value
+    def __init__(self, article_id : int, user_id: int, type: int):
+        self.type = type
         self.article_id = article_id
+        self.user_id = user_id
+
+class ReactionType(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    value = db.Column(db.Integer, default=1, nullable=False)
 
 class Rule(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -356,6 +363,7 @@ def edit_article(id):
     return render_template("./article/article_form.html", form=form)
 
 @app.route("/article/<id>/delete", methods=["GET"])
+@login_required
 def delete_article(id):
     article: Article = Article.query.get(id)
     if not article:
@@ -368,10 +376,30 @@ def delete_article(id):
 
     return redirect(url_for("main"))
 
+@app.route("/article/<id>/add_reaction/<reaction_type>", methods=["GET"])
+@login_required
+def add_reaction_article(id, reaction_type):
+    article: Article = Article.query.get(id)
+    if not article:
+        return redirect(url_for("main"))
+
+    user_reaction = Reaction(id, current_user.id, reaction_type)
+    try:
+        db.session.add(user_reaction)
+        db.session.commit()
+
+        return redirect(url_for("detail_article", id=article.id))
+    except Exception as e:
+        db.session.rollback()
+        print('Error:', e)
+
+    return redirect(url_for("detail_article", id=article.id))
+
 @app.route("/article/<id>", methods=["GET"])
 def detail_article(id):
     article = Article.query.get(id)
-    return render_template("./article/articles_detail.html", article = article, globals=getGlobalsInfo())
+    reactions = ReactionType.query.all()
+    return render_template("./article/articles_detail.html", article = article, reactions=reactions, globals=getGlobalsInfo())
 
 @app.route("/view_articles/", methods=["GET"])
 def view():
