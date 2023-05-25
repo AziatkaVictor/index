@@ -26,13 +26,10 @@
     </div>
     {% if article.reactionFrom(current_user.id) %}
     <div>
-        <span class="secondary-color">Ваша оценка:</span> {{ article.reactionFrom(current_user.id).reaction_type.getWidget }}
+        <span class="secondary-color">Ваша оценка:</span> {{
+        article.reactionFrom(current_user.id).reaction_type.getWidget }}
     </div>
     {% endif %}
-
-    {% for reaction in article.reactionValuesInRange(30) %}
-        {{reaction}}
-    {% endfor %}
 
     <div style="margin-top: 10px">{{ article.content|safe }}</div>
 
@@ -45,10 +42,40 @@
     {% if not current_user.id == article.author_id %}
     <p>
         {% for reaction in reactions %}
-            <a href="{{ url_for('add_reaction_article', id=article.id, reaction_type=reaction.id)}}">{{reaction.getWidget}}</a>
+        <a
+            href="{{ url_for('add_reaction_article', id=article.id, reaction_type=reaction.id)}}">{{reaction.getWidget}}</a>
         {% endfor %}
     </p>
     {% endif %}
+
+    <h2>Статистика запису</h2>
+    <p>Тут описана все детали о записи. Данная информация видна лишь автору и администраторам.</p>
+    <h3>Информация о реакциях за первые 30 дней</h3>
+    <canvas id="reactions" style="width:100%; max-height:400px"></canvas>
+    <script>
+        
+        var xValues = [{% for (key, value) in article.reactionValuesInRange(30).items() %}'{{ key }}',{% endfor %}];
+        var yValues = [{% for (key, value) in article.reactionValuesInRange(30).items() %}{{ value }},{% endfor %}];
+
+        new Chart("reactions", {
+            type: "line",
+            data: {
+                labels: xValues,
+                datasets: [
+                    {
+                        label: 'Реакции за первые 30 дней',
+                        fill: false,
+                        data: yValues,
+                        pointRadius: 4,
+                        borderColor: "rgba(0,255,0,1)",
+                    }
+                ]
+            },
+            options: {
+                legend: { display: false },
+            }
+        });
+    </script>
 </div>
 
 {% endblock %}

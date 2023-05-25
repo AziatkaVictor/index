@@ -55,7 +55,7 @@ class ReactionType(db.Model):
     
 class Reaction(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    creation_datetime = db.Column(db.DateTime)
+    creation_datetime = db.Column(db.DateTime, server_default=db.func.now())
     type = db.Column(db.Integer, db.ForeignKey('reaction_type.id'), nullable=False)
     article_id = db.Column(db.Integer, db.ForeignKey('article.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -64,7 +64,6 @@ class Reaction(db.Model, Methods):
         self.type = type
         self.article_id = article_id
         self.user_id = user_id
-        self.creation_datetime = dt.datetime.utcnow()
 
     @property
     def reaction_type(self) -> ReactionType:
@@ -165,7 +164,7 @@ class Article(db.Model, Methods):
     content = db.Column(db.Text, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
-    creation_date = db.Column(db.DateTime, server_default="NOW()", nullable=False)
+    creation_date = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
     is_hidden = db.Column(db.Boolean, server_default="0", nullable=False)
     is_verified = db.Column(db.Boolean, server_default="0", nullable=False)
 
@@ -212,9 +211,9 @@ class Article(db.Model, Methods):
     def isVisible(self) -> bool:
         return (not self.is_hidden) and self.category.isVisible
     
-    def reactionValuesInRange(self, count: int) -> list[int]:
-        data = [self.reactionsByDate(self.creation_date.date() - dt.timedelta(days=x)) for x in range(count)]
-        return [sum([reaction.value for reaction in reactions]) for reactions in data]
+    def reactionValuesInRange(self, count: int) -> dict[dt.date, int]:
+        data = {self.creation_date.date() - dt.timedelta(days=x): self.reactionsByDate(self.creation_date.date() - dt.timedelta(days=x)) for x in range(count)}
+        return {k: sum([reaction.value for reaction in v]) for (k, v) in data.items()}
     
     def reactionsByDate(self, date: dt.date) -> list[Reaction]:
         start = dt.datetime(year=date.year, month=date.month, day=date.day, hour=0, minute=0)
