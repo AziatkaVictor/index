@@ -2,26 +2,53 @@
 {% block title %}Обзор{% endblock %}
 {% block content %}
 
+<dialog open>
+    <p>Greetings, one and all!</p>
+    <form method="dialog">
+        <button>OK</button>
+    </form>
+</dialog>
+
 <div class="container-shadow full" style="position: relative;">
     <h1>{{ article.name }}</h1>
     <div>
-        <span class="secondary-color">Автор:</span> <a href="{{ url_for('profile', id=article.author.id)}}">{{ article.author.username }}</a>
+        <span class="secondary-color">Автор:</span> <a href="{{ url_for('profile', id=article.author.id)}}">{{
+            article.author.username }}</a>
     </div>
     <div>
         <span class="secondary-color">Категория:</span> {{ article.category.name }}
     </div>
+    <div>
+        <span class="secondary-color">Рейтинг записи:</span> {{ article.rating }} ({{ article.reactions_count }} оценок)
+    </div>
+    <div>
+        <span class="secondary-color">Средняя оценка:</span> {{ article.avgRating }}
+    </div>
+    {% if article.reactionFrom(current_user.id) %}
+    <div>
+        <span class="secondary-color">Ваша оценка:</span> {{ article.reactionFrom(current_user.id).reaction_type.getWidget }}
+    </div>
+    {% endif %}
+
+    {% for reaction in article.reactionValuesInRange(30) %}
+        {{reaction}}
+    {% endfor %}
+
     <div style="margin-top: 10px">{{ article.content|safe }}</div>
 
     {% if article.canEdit() %}
-        <div style="position: absolute; top: 15px; right: 15px; text-align: end; width: -webkit-fill-available;">
-            <a href="{{ url_for('edit_article', id=article.id)}}">Edit</a> | <a href="{{ url_for('delete_article', id=article.id)}}">Delete</a>
-        </div>
+    <div style="position: absolute; top: 15px; right: 15px; text-align: end; width: -webkit-fill-available;">
+        <a href="{{ url_for('edit_article', id=article.id)}}">Edit</a> | <a
+            href="{{ url_for('delete_article', id=article.id)}}">Delete</a>
+    </div>
     {% endif %}
+    {% if not current_user.id == article.author_id %}
     <p>
         {% for reaction in reactions %}
-
+            <a href="{{ url_for('add_reaction_article', id=article.id, reaction_type=reaction.id)}}">{{reaction.getWidget}}</a>
         {% endfor %}
     </p>
+    {% endif %}
 </div>
 
 {% endblock %}

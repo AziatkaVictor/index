@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
@@ -42,18 +42,54 @@ class Methods():
     def getAll(self):
         return self.query.filter_by().all()
 
+class ReactionType(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    value = db.Column(db.Integer, server_default="1", nullable=False)
+
+    @property
+    def getWidget(self):
+        if self.value > 0:
+            return f"{self.name} (+{self.value})"
+        return f"{self.name} ({self.value})"
+    
+class Reaction(db.Model, Methods):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    creation_datetime = db.Column(db.DateTime)
+    type = db.Column(db.Integer, db.ForeignKey('reaction_type.id'), nullable=False)
+    article_id = db.Column(db.Integer, db.ForeignKey('article.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __init__(self, article_id : int, user_id: int, type: int):
+        self.type = type
+        self.article_id = article_id
+        self.user_id = user_id
+        self.creation_datetime = dt.datetime.utcnow()
+
+    @property
+    def reaction_type(self) -> ReactionType:
+        return ReactionType.query.get(self.type)
+    
+    @property
+    def value(self) -> ReactionType:
+        return ReactionType.query.get(self.type).value
+    
+    @property
+    def user(self):
+        return User.query.get(self.user_id)
+
 class User(db.Model, UserMixin, Methods):
     id = db.Column(db.Integer, primary_key=True, unique=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(20), nullable=False)
-    registration_date = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
-    avatar = db.Column(db.String(400))
-    background = db.Column(db.String(400))
+    registration_date = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
+    avatar = db.Column(db.String(200))
+    background = db.Column(db.String(200))
     about = db.Column(db.Text)
     age = db.Column(db.Integer)
     articles = db.relationship('Article', backref='user')
-    admin = db.Column(db.Boolean, default=False)
+    admin = db.Column(db.Boolean, server_default="0")
 
     def __init__(self, username : str, email : str, password : str):
         self.username = username
@@ -63,16 +99,14 @@ class User(db.Model, UserMixin, Methods):
     def __repr__(self):
         return f'<User {self.id}, {self.username}, {self.email}>'
     
-    # TODO: Репутация пользователя
     @property
     def reputation(self):
-        return 0
+        return sum([article.rating for article in self.articles])
 
     @property
     def articles_count(self):
         return len(self.articles)
 
-    # TODO: Проверку, администратор ли пользователь
     @property
     def is_admin(self):
         return bool(self.admin)
@@ -97,7 +131,7 @@ class User(db.Model, UserMixin, Methods):
 class Category(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String, nullable=False)
-    is_hidden = db.Column(db.Boolean, default=False, nullable=False)
+    is_hidden = db.Column(db.Boolean, server_default="0", nullable=False)
     articles = db.relationship('Article', backref='category')
 
     def __init__(self, name : str):
@@ -131,10 +165,9 @@ class Article(db.Model, Methods):
     content = db.Column(db.Text, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
-    creation_date = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
-    is_hidden = db.Column(db.Boolean, default=False, nullable=False)
-    is_verified = db.Column(db.Boolean, default=False, nullable=False)
-    reactions = db.relationship("Reaction", backref="article")
+    creation_date = db.Column(db.DateTime, server_default="NOW()", nullable=False)
+    is_hidden = db.Column(db.Boolean, server_default="0", nullable=False)
+    is_verified = db.Column(db.Boolean, server_default="0", nullable=False)
 
     def __init__(self, name : str, content : str, author_id : int, category_id : int):
         self.name = name
@@ -147,6 +180,27 @@ class Article(db.Model, Methods):
         return User.query.get(self.author_id)
 
     @property
+    def reactions(self) -> list[Reaction]:
+        return Reaction.query.filter_by(article_id = self.id).all()
+    
+    @property
+    def reactions_count(self) -> list[Reaction]:
+        return len(self.reactions)
+    
+    @property
+    def avgRating(self) -> float:
+        if len(self.reactions) > 0:
+            result = round(sum([reaction.value for reaction in self.reactions]) / len(self.reactions), 2)
+            return result
+        return 0.0
+    
+    @property
+    def rating(self) -> int:
+        if len(self.reactions) > 0:
+            return sum([reaction.value for reaction in self.reactions])
+        return 0
+
+    @property
     def category(self) -> Category:
         return Category.query.get(self.category_id)
 
@@ -157,6 +211,18 @@ class Article(db.Model, Methods):
     @property
     def isVisible(self) -> bool:
         return (not self.is_hidden) and self.category.isVisible
+    
+    def reactionValuesInRange(self, count: int) -> list[int]:
+        data = [self.reactionsByDate(self.creation_date.date() - dt.timedelta(days=x)) for x in range(count)]
+        return [sum([reaction.value for reaction in reactions]) for reactions in data]
+    
+    def reactionsByDate(self, date: dt.date) -> list[Reaction]:
+        start = dt.datetime(year=date.year, month=date.month, day=date.day, hour=0, minute=0)
+        end = dt.datetime(year=date.year, month=date.month, day=date.day, hour=23, minute=59)
+        return Reaction.query.filter_by(article_id = self.id).filter(Reaction.creation_datetime >= start).filter(Reaction.creation_datetime <= end).all()
+    
+    def reactionFrom(self, id: int) -> Reaction | None:
+        return Reaction.query.filter_by(user_id = id, article_id = self.id).first()
     
     def canEdit(self, user: User = current_user) -> bool:
         if not user:
@@ -172,26 +238,10 @@ class Article(db.Model, Methods):
             return False
         return user.is_admin or user.id == self.author_id
 
-class Reaction(db.Model, Methods):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    type = db.Column(db.Integer, db.ForeignKey('reaction_type.id'), nullable=False)
-    article_id = db.Column(db.Integer, db.ForeignKey('article.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-    def __init__(self, article_id : int, user_id: int, type: int):
-        self.type = type
-        self.article_id = article_id
-        self.user_id = user_id
-
-class ReactionType(db.Model):
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    name = db.Column(db.String, nullable=False)
-    value = db.Column(db.Integer, default=1, nullable=False)
-
 class Rule(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    title = db.Column(db.String, default="Default Title", nullable=False)
-    description = db.Column(db.Text, default="Default description of the rule", nullable=False)
+    title = db.Column(db.String, server_default="Default Title", nullable=False)
+    description = db.Column(db.Text, server_default="Default description of the rule", nullable=False)
     parent_id = db.Column(db.Integer, db.ForeignKey('rule.id'), index=True)
     children = db.relationship(lambda: Rule, remote_side=id, backref='sub_rules')
 
@@ -212,7 +262,7 @@ class Сomplaint(db.Model, Methods):
 
 class ComplaintStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    name = db.Column(db.String, default="Default name", nullable=False)
+    name = db.Column(db.String, server_default="Default name", nullable=False)
 
     def __init__(self, name: str):
         self.name = name
@@ -382,9 +432,20 @@ def add_reaction_article(id, reaction_type):
     article: Article = Article.query.get(id)
     if not article:
         return redirect(url_for("main"))
+    
+    if current_user.id == article.author_id:
+        return redirect(url_for("detail_article", id=article.id))
 
-    user_reaction = Reaction(id, current_user.id, reaction_type)
+    reaction: Reaction = Reaction.query.filter_by(user_id = current_user.id, article_id = id).first()
     try:
+        if reaction:
+            reaction.type = reaction_type
+            reaction.creation_datetime = dt.datetime.utcnow()
+            db.session.commit()
+
+            return redirect(url_for("detail_article", id=article.id))
+        
+        user_reaction = Reaction(id, current_user.id, reaction_type)
         db.session.add(user_reaction)
         db.session.commit()
 
@@ -398,6 +459,9 @@ def add_reaction_article(id, reaction_type):
 @app.route("/article/<id>", methods=["GET"])
 def detail_article(id):
     article = Article.query.get(id)
+    if not article:
+        return redirect(url_for('main'))
+    
     reactions = ReactionType.query.all()
     return render_template("./article/articles_detail.html", article = article, reactions=reactions, globals=getGlobalsInfo())
 
