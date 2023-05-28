@@ -9,73 +9,112 @@
     </form>
 </dialog>
 
-<div class="container-shadow full" style="position: relative;">
-    <h1>{{ article.name }}</h1>
-    <div>
-        <span class="secondary-color">Автор:</span> <a href="{{ url_for('profile', id=article.author.id)}}">{{
-            article.author.username }}</a>
-    </div>
-    <div>
-        <span class="secondary-color">Категория:</span> {{ article.category.name }}
-    </div>
-    <div>
-        <span class="secondary-color">Рейтинг записи:</span> {{ article.rating }} ({{ article.reactions_count }} оценок)
-    </div>
-    <div>
-        <span class="secondary-color">Средняя оценка:</span> {{ article.avgRating }}
-    </div>
-    {% if article.reactionFrom(current_user.id) %}
-    <div>
-        <span class="secondary-color">Ваша оценка:</span> {{
-        article.reactionFrom(current_user.id).reaction_type.getWidget }}
-    </div>
-    {% endif %}
+<div class="full">
+    <div class="container-shadow full" style="position: relative;">
+        <h1>{{ article.name }}</h1>
+        <div>
+            <span class="secondary-color">Автор:</span> <a href="{{ url_for('profile', id=article.author.id)}}">{{
+                article.author.username }}</a>
+        </div>
+        <div>
+            <span class="secondary-color">Категория:</span> {{ article.category.name }}
+        </div>
+        <div>
+            <span class="secondary-color">Рейтинг записи:</span> {{ article.rating }} ({{ article.reactions_count }}
+            оценок)
+        </div>
+        <div>
+            <span class="secondary-color">Средняя оценка:</span> {{ article.avgRating }}
+        </div>
+        {% if article.reactionFrom(current_user) %}
+        <div>
+            <span class="secondary-color">Ваша оценка:</span> {{
+            article.reactionFrom(current_user).reaction_type.getWidget }}
+        </div>
+        {% endif %}
 
-    <div style="margin-top: 10px">{{ article.content|safe }}</div>
+        <div style="margin-top: 10px">{{ article.content|safe }}</div>
 
-    {% if article.canEdit() %}
-    <div style="position: absolute; top: 15px; right: 15px; text-align: end; width: -webkit-fill-available;">
-        <a href="{{ url_for('edit_article', id=article.id)}}">Edit</a> | <a
-            href="{{ url_for('delete_article', id=article.id)}}">Delete</a>
+        {% if article.canEdit() %}
+        <div style="position: absolute; top: 15px; right: 15px; text-align: end; width: -webkit-fill-available;">
+            <a href="{{ url_for('edit_article', id=article.id)}}">Edit</a> | <a
+                href="{{ url_for('delete_article', id=article.id)}}">Delete</a>
+        </div>
+        {% endif %}
+        {% if article.canSetReactions() %}
+        <p>
+            {% for reaction in reactions %}
+            <a
+                href="{{ url_for('add_reaction_article', id=article.id, reaction_type=reaction.id)}}">{{reaction.getWidget}}</a>
+            {% endfor %}
+        </p>
+        {% endif %}
     </div>
-    {% endif %}
-    {% if not current_user.id == article.author_id %}
-    <p>
-        {% for reaction in reactions %}
-        <a
-            href="{{ url_for('add_reaction_article', id=article.id, reaction_type=reaction.id)}}">{{reaction.getWidget}}</a>
-        {% endfor %}
-    </p>
-    {% endif %}
+    {% if article.canSeeStatistic() %}
+        <div class="container-shadow full" style="position: relative; margin-top: 10px;">
+            <h2>Статистика запису</h2>
+            <div class="flex-display">
 
-    <h2>Статистика запису</h2>
-    <p>Тут описана все детали о записи. Данная информация видна лишь автору и администраторам.</p>
-    <h3>Информация о реакциях за первые 30 дней</h3>
-    <canvas id="reactions" style="width:100%; max-height:400px"></canvas>
-    <script>
-        
-        var xValues = [{% for (key, value) in article.reactionValuesInRange(30).items() %}'{{ key }}',{% endfor %}];
-        var yValues = [{% for (key, value) in article.reactionValuesInRange(30).items() %}{{ value }},{% endfor %}];
+                <p style="text-align: justify;">Тут описана все детали о записи. Данная информация видна лишь автору и администраторам. Справа находиться диаграмма соотношений типа оценок. Она демонстрирует, насколько много оценко каждого типа было получено. Снизу отображена информация о том, какие оценки были получены в первые 30 дней, после публикации. Дана информация о том, сколько оценок получено, а так же, какова их сумарная и средная величина.</p>
+                <canvas id="reactions" style="max-width: 400px; margin: 0 -90px 0 -65px;"></canvas>
+            </div>
+            <h3>Информация о реакциях за первые 20 дней</h3>
+            <canvas id="values" style="max-width: 700px; max-height: 350px; margin: auto;"></canvas>
+            <script>
 
-        new Chart("reactions", {
-            type: "line",
-            data: {
-                labels: xValues,
-                datasets: [
-                    {
-                        label: 'Реакции за первые 30 дней',
-                        fill: false,
-                        data: yValues,
-                        pointRadius: 4,
-                        borderColor: "rgba(0,255,0,1)",
+                var xDates = [{% for v in article.getDatesRange(20) %}'{{ v }}', {% endfor %}];
+                var xReactions = [{% for k in article.reactionsInfo.keys() %}'{{ k }}', {% endfor %}];
+
+                var yValues = {{ article.reactionValuesInRange(20) }};
+                var yCount = {{ article.reactionCountInRange(20) }};
+                var yAvg = {{ article.reactionAvgInRange(20) }};
+                var yReactions = [{% for v in article.reactionsInfo.values() %}{{ v }}, {% endfor %}];
+
+                new Chart("values", {
+                    type: "bar",
+                    data: {
+                        labels: xDates,
+                        datasets: [
+                            {
+                                label: 'Общее значение',
+                                data: yValues,
+                                backgroundColor: "rgba(0,255,0,1)",
+                            },
+                            {
+                                label: 'Количество',
+                                data: yCount,
+                                backgroundColor: "rgba(0,255,255,1)",
+                            },
+                            {
+                                label: 'Среднее значение',
+                                data: yAvg,
+                                backgroundColor: "rgba(255,0,255,1)",
+                            }
+                        ]
                     }
-                ]
-            },
-            options: {
-                legend: { display: false },
-            }
-        });
-    </script>
+                });
+                
+                new Chart("reactions", {
+                    type: "radar",
+                    data: {
+                        labels: xReactions,
+                        datasets: [
+                            {
+                                data: yReactions,
+                                backgroundColor: "rgba(0,255,125,0.5)",
+                            },
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                           display: false
+                        },
+                    }
+                });
+            </script>
+        </div>
+    {% endif %}
 </div>
 
 {% endblock %}

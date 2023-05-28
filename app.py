@@ -98,6 +98,10 @@ class User(db.Model, UserMixin, Methods):
     def __repr__(self):
         return f'<User {self.id}, {self.username}, {self.email}>'
     
+    def mostPopularArticles(self, count: int = 5):
+        data = Article.query.filter_by(author_id = self.id).all()
+        return list(sorted(data, key=lambda x: x.rating, reverse=True))[:count]
+    
     @property
     def reputation(self):
         return sum([article.rating for article in self.articles])
@@ -198,6 +202,10 @@ class Article(db.Model, Methods):
         if len(self.reactions) > 0:
             return sum([reaction.value for reaction in self.reactions])
         return 0
+    
+    @property
+    def reactionsInfo(self) -> dict[str, int]:
+        return {k.name: len(Reaction.query.filter_by(article_id=self.id, type=k.id).all()) for k in ReactionType.query.all()}
 
     @property
     def category(self) -> Category:
@@ -211,17 +219,35 @@ class Article(db.Model, Methods):
     def isVisible(self) -> bool:
         return (not self.is_hidden) and self.category.isVisible
     
-    def reactionValuesInRange(self, count: int) -> dict[dt.date, int]:
-        data = {self.creation_date.date() - dt.timedelta(days=x): self.reactionsByDate(self.creation_date.date() - dt.timedelta(days=x)) for x in range(count)}
-        return {k: sum([reaction.value for reaction in v]) for (k, v) in data.items()}
+    def getDatesRange(self, count: int) -> list[dt.datetime]:
+        return [self.creation_date.date() + dt.timedelta(days=x) for x in range(count)]
+    
+    def getReactionsInRange(self, count: int) -> list[list[Reaction]]:
+        return [self.reactionsByDate(v) for v in self.getDatesRange(count)]
+
+    def reactionValuesInRange(self, count: int) -> list[int]:
+        return [sum([reaction.value for reaction in v]) for v in self.getReactionsInRange(count)]
+    
+    def reactionAvgInRange(self, count: int) -> dict[dt.date, int]:
+        result = []
+        for v in self.getReactionsInRange(count):
+            if len(v) > 0:
+                result.append(round(sum([reaction.value for reaction in v])/len(v), 2))
+                continue
+            result.append(0)
+        return result
+    
+    def reactionCountInRange(self, count: int) -> dict[dt.date, int]:
+        return [len(v) for v in self.getReactionsInRange(count)]
     
     def reactionsByDate(self, date: dt.date) -> list[Reaction]:
         start = dt.datetime(year=date.year, month=date.month, day=date.day, hour=0, minute=0)
         end = dt.datetime(year=date.year, month=date.month, day=date.day, hour=23, minute=59)
         return Reaction.query.filter_by(article_id = self.id).filter(Reaction.creation_datetime >= start).filter(Reaction.creation_datetime <= end).all()
     
-    def reactionFrom(self, id: int) -> Reaction | None:
-        return Reaction.query.filter_by(user_id = id, article_id = self.id).first()
+    def reactionFrom(self, user: User = current_user) -> Reaction | None:
+        if user.is_authenticated:
+            return Reaction.query.filter_by(user_id = user.id, article_id = self.id).first()
     
     def canEdit(self, user: User = current_user) -> bool:
         if not user:
@@ -236,6 +262,16 @@ class Article(db.Model, Methods):
         if not user.is_authenticated:
             return False
         return user.is_admin or user.id == self.author_id
+    
+    def canSeeStatistic(self, user: User = current_user) -> bool:
+        if user.is_authenticated:
+            return user.id == self.author_id or user.is_admin
+        return False
+    
+    def canSetReactions(self, user: User = current_user) -> bool:
+        if user.is_authenticated:
+            return user.id != self.author_id
+        return False
 
 class Rule(db.Model, Methods):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -377,7 +413,7 @@ def add_article():
     form.category.choices = [(data.id, data.name)for data in Category.getData()]
 
     if form.validate_on_submit():
-        article = Article(form.name.data, form.content.data, current_user.id, form.category.id)
+        article = Article(form.name.data, form.content.data, current_user.id, form.category.data)
         try:
             db.session.add(article)
             db.session.commit()

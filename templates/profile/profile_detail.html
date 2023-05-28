@@ -19,7 +19,8 @@
 
             <div class="profile-details">
                 <h2 class="profile-username clear-margin">{{ user.username }}</h2>
-                <p class="clear-margin">Группа</p>
+                <span class="secondary-color">Статьи:</span> {{ user.articles_count }}
+                <span class="secondary-color">Репутация:</span> {{ user.reputation }}
             </div>
         </div>
         <div class="profile-info-right">
@@ -29,18 +30,16 @@
         </div>
     </div>
     <div>
+        {% import 'widgets/article-item.jinja' as widget %}
         <p>{{ user.about }}</p>
-        <h2>Записи {{ user.username }}</h2>
-        {% for article in user.articles %}
-            <div class="article-item">
-                <a href="{{ url_for('detail_article', id=article.id) }}">{{ article.name }}</a>
-                <div class="article-item-info">
-                    <div class="secondary-color litlle">
-                        {{ article.datetime }}
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+        <h2>Самые популярные 5 записей</h2>
+        <div>
+            {{ widget.getList(user.mostPopularArticles()) }}
+        </div>
+        <h2>Все записи</h2>
+        <div>
+            {{ widget.getList(user.articles|reverse) }}
+        </div>
     </div>
 </div>
 {% endblock %}

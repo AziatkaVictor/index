@@ -28,10 +28,7 @@
             </li>
             {% endif %}
             <li class="navbar-item">
-                <a href="#">Активность</a>
-            </li>
-            <li class="navbar-item">
-                <a href="#">Тех. поддержка</a>
+                <a href="{{ url_for('rules') }}">Правила</a>
             </li>
             {% if current_user.is_admin %}
             <li class="navbar-item">

@@ -34,13 +34,13 @@
                     <ul class="clear-ul">
                         <li class="article">
                             <a href="{{ url_for('detail_article', id=page.id) }}" class="article-link">{{ page.name }}</a><br>
-                            <span class="secondary-color litlle">от <a href="#"class="article-link">{{ page.author.username }}</a></span>
+                            <span class="secondary-color litlle">от <a href="{{ url_for('profile', id=page.author.id) }}"class="article-link">{{ page.author.username }}</a></span>
                         </li>
                     </ul>
                 {% endfor %}
             {% else %}
             <p>
-                Нету статей(
+                На данный момент, записей нет.
             </p>
             {% endif %}
         </div>

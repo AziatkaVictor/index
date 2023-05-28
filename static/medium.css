@@ -36,7 +36,7 @@
 
     .additional-information {
         margin-right: 0 !important;
-        max-width: max-content !important;
+        max-width: -webkit-fill-available !important;
     }
 
     #sticky-content.sticky-content-start {
