@@ -21,33 +21,33 @@
             </div>
             <hr>
             <ul class="clear-ul">
-                <li><span class="secondary-color">Репутация:</span> {{ current_user.reputation }}</li>
-                <li><span class="secondary-color">Статьи:</span> {{ current_user.articles_count }}</li>
+                <li><span class="secondary-color">Репутація:</span> {{ current_user.reputation }}</li>
+                <li><span class="secondary-color">Статті:</span> {{ current_user.articles_count }}</li>
             </ul>
         </div>
         {% endif %}
         <!-- Последние статьи -->
         <div class="container-shadow">
-            <h4>Последние статьи</h4>
+            <h4>Останні статті</h4>
             {% if globals.lastPages %}
                 {% for page in globals.lastPages %}
                     <ul class="clear-ul">
                         <li class="article">
                             <a href="{{ url_for('detail_article', id=page.id) }}" class="article-link">{{ page.name }}</a><br>
-                            <span class="secondary-color litlle">от <a href="{{ url_for('profile', id=page.author.id) }}"class="article-link">{{ page.author.username }}</a></span>
+                            <span class="secondary-color litlle">від <a href="{{ url_for('profile', id=page.author.id) }}"class="article-link">{{ page.author.username }}</a></span>
                         </li>
                     </ul>
                 {% endfor %}
             {% else %}
             <p>
-                На данный момент, записей нет.
+                На даний момент записів немає.
             </p>
             {% endif %}
         </div>
         <!-- Жалобы -->
         <div class="container-shadow">
-            <h4>Жалобы</h4>
-            <p>При нарушении правил вы можете доложить об этом администрации!</p>
+            <h4>Скарги</h4>
+            <p>За порушення правил ви можете доповісти про це адміністрації!</p>
         </div>
     </div>
     <script>

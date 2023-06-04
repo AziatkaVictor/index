@@ -17,18 +17,18 @@
                 article.author.username }}</a>
         </div>
         <div>
-            <span class="secondary-color">Категория:</span> {{ article.category.name }}
+            <span class="secondary-color">Категорія:</span> {{ article.category.name }}
         </div>
         <div>
-            <span class="secondary-color">Рейтинг записи:</span> {{ article.rating }} ({{ article.reactions_count }}
+            <span class="secondary-color">Рейтинг запису:</span> {{ article.rating }} ({{ article.reactions_count }}
             оценок)
         </div>
         <div>
-            <span class="secondary-color">Средняя оценка:</span> {{ article.avgRating }}
+            <span class="secondary-color">Середня оцінка:</span> {{ article.avgRating }}
         </div>
         {% if article.reactionFrom(current_user) %}
         <div>
-            <span class="secondary-color">Ваша оценка:</span> {{
+            <span class="secondary-color">Ваша оцінка:</span> {{
             article.reactionFrom(current_user).reaction_type.getWidget }}
         </div>
         {% endif %}
@@ -37,8 +37,8 @@
 
         {% if article.canEdit() %}
         <div style="position: absolute; top: 15px; right: 15px; text-align: end; width: -webkit-fill-available;">
-            <a href="{{ url_for('edit_article', id=article.id)}}">Edit</a> | <a
-                href="{{ url_for('delete_article', id=article.id)}}">Delete</a>
+            <a href="{{ url_for('edit_article', id=article.id)}}">Редагувати</a> | <a
+                href="{{ url_for('delete_article', id=article.id)}}">Видалити</a>
         </div>
         {% endif %}
         {% if article.canSetReactions() %}
@@ -54,11 +54,10 @@
         <div class="container-shadow full" style="position: relative; margin-top: 10px;">
             <h2>Статистика запису</h2>
             <div class="flex-display">
-
-                <p style="text-align: justify;">Тут описана все детали о записи. Данная информация видна лишь автору и администраторам. Справа находиться диаграмма соотношений типа оценок. Она демонстрирует, насколько много оценко каждого типа было получено. Снизу отображена информация о том, какие оценки были получены в первые 30 дней, после публикации. Дана информация о том, сколько оценок получено, а так же, какова их сумарная и средная величина.</p>
+                <p style="text-align: justify;">Тут описано всі деталі запису. Ця інформація видно лише автору та адміністраторам. Праворуч перебуває діаграма співвідношень типу оцінок. Вона демонструє, наскільки багато оцінок кожного типу було отримано. Знизу відображено інформацію про те, які оцінки були отримані в перші 30 днів після публікації. Дана інформація про те, скільки оцінок отримано, а так само, яка їх сумарна та середня величина.</p>
                 <canvas id="reactions" style="max-width: 400px; margin: 0 -90px 0 -65px;"></canvas>
             </div>
-            <h3>Информация о реакциях за первые 20 дней</h3>
+            <h3>Інформація про реакції за перші 20 днів</h3>
             <canvas id="values" style="max-width: 700px; max-height: 350px; margin: auto;"></canvas>
             <script>
 

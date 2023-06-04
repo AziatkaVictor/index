@@ -19,24 +19,24 @@
 
             <div class="profile-details">
                 <h2 class="profile-username clear-margin">{{ user.username }}</h2>
-                <span class="secondary-color">Статьи:</span> {{ user.articles_count }}
-                <span class="secondary-color">Репутация:</span> {{ user.reputation }}
+                <span class="secondary-color">Статті:</span> {{ user.articles_count }}
+                <span class="secondary-color">Репутація:</span> {{ user.reputation }}
             </div>
         </div>
         <div class="profile-info-right">
             {% if user.id == current_user.id %}
-                <a href="{{ url_for('profile_settings') }}">Настройки профиля</a>
+                <a href="{{ url_for('profile_settings') }}">Налаштування профілю</a>
             {% endif %}
         </div>
     </div>
     <div>
         {% import 'widgets/article-item.jinja' as widget %}
         <p>{{ user.about }}</p>
-        <h2>Самые популярные 5 записей</h2>
+        <h2>Найпопулярніші 5 записів</h2>
         <div>
             {{ widget.getList(user.mostPopularArticles()) }}
         </div>
-        <h2>Все записи</h2>
+        <h2>Усі записи</h2>
         <div>
             {{ widget.getList(user.articles|reverse) }}
         </div>

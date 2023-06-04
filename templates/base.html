@@ -24,7 +24,7 @@
             </li>
             {% if current_user.is_authenticated %}
             <li class="navbar-item">
-                <a href="{{ url_for('add_article') }}">Добавить запись</a>
+                <a href="{{ url_for('add_article') }}">Додати запис</a>
             </li>
             {% endif %}
             <li class="navbar-item">
@@ -40,17 +40,17 @@
             <li class="navbar-item more">≡</li>
             {% if not current_user.is_authenticated %}
                 <li class="navbar-item">
-                    <a href="{{ url_for('login')}}">Войти</a>
+                    <a href="{{ url_for('login')}}">Увійти</a>
                 </li>
                 <li class="navbar-item">
-                    <a href="{{ url_for('registration')}}">Регистрация</a>
+                    <a href="{{ url_for('registration')}}">Реєстрація</a>
                 </li>
             {% else %}   
                 <li class="navbar-item">
                     <a href="{{ current_user.link }}">{{ current_user.username }}</a>
                 </li>
                 <li class="navbar-item">
-                    <a href="{{ url_for('logout')}}">Выйти</a>
+                    <a href="{{ url_for('logout')}}">Вийти</a>
                 </li>
             {% endif %}
         </ul>
