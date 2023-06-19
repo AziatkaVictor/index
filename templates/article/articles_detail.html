@@ -48,10 +48,10 @@
             <h2>Статистика запису</h2>
             <div class="flex-display">
                 <p style="text-align: justify;">Тут описано всі деталі запису. Ця інформація видно лише автору та адміністраторам. Праворуч перебуває діаграма співвідношень типу оцінок. Вона демонструє, наскільки багато оцінок кожного типу було отримано. Знизу відображено інформацію про те, які оцінки були отримані в перші 30 днів після публікації. Дана інформація про те, скільки оцінок отримано, а так само, яка їх сумарна та середня величина.</p>
-                <canvas id="reactions" style="max-width: 400px; margin: 0 -90px 0 -65px;"></canvas>
+                <canvas id="reactions" style="max-width: 250px; max-height: 250px; margin-left: 20px; margin-right: -10px;"></canvas>
             </div>
             <h3>Інформація про реакції за перші 20 днів</h3>
-            <canvas id="values" style="max-width: 700px; max-height: 350px; margin: auto;"></canvas>
+            <canvas id="values" style="max-width: 700px; max-height: 350px; min-height: 300px; margin: auto;"></canvas>
             <script>
 
                 var xDates = [{% for v in article.getDatesRange(20) %}'{{ v }}', {% endfor %}];
@@ -68,17 +68,17 @@
                         labels: xDates,
                         datasets: [
                             {
-                                label: 'Общее значение',
+                                label: 'Загальне значення',
                                 data: yValues,
                                 backgroundColor: "rgba(0,255,0,1)",
                             },
                             {
-                                label: 'Количество',
+                                label: 'Кількість',
                                 data: yCount,
                                 backgroundColor: "rgba(0,255,255,1)",
                             },
                             {
-                                label: 'Среднее значение',
+                                label: 'Середнє значення',
                                 data: yAvg,
                                 backgroundColor: "rgba(255,0,255,1)",
                             }
@@ -92,16 +92,27 @@
                         labels: xReactions,
                         datasets: [
                             {
+                                label: 'Reactions',
                                 data: yReactions,
                                 backgroundColor: "rgba(0,255,125,0.5)",
                             },
                         ]
                     },
                     options: {
-                        responsive: true,
-                        legend: {
-                           display: false
+                        scales: {
+                            r: {
+                                suggestedMin: 0,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
                         },
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            }
+                        }
                     }
                 });
             </script>
