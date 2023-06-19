@@ -1,6 +1,5 @@
 .avatar {
     margin-left: 10px;
-    background-color: var(--background-secondary-color);
     border-radius: 100%;
     width: 64px;
     height: 64px;
@@ -42,7 +41,6 @@
     border-radius: 100%;
     width: 125px;
     height: 125px;
-    box-shadow: #00000094 0 0 3px 0px;
     background-position: center;
     background-size: cover;
 }
